@@ -1,0 +1,264 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeFile="AdminMasterPage.master.cs" Inherits="Admin_AllowShipMasterPage" %>
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>管理员后台 - 滴滴打船</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <style>
+        /* 全局样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        /* 顶部导航栏 */
+        .navbar {
+            height: 60px;
+            background-color: #34495e;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar .logo {
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        .navbar .admin-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .navbar .admin-info .logout-button {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .navbar .admin-info .logout-button:hover {
+            background-color: #c0392b;
+        }
+
+        /* 主布局 */
+        .layout {
+            display: flex;
+            flex-grow: 1;
+            height: calc(100vh - 100px); /* 扣除顶部导航栏和页脚的高度 */
+        }
+
+        /* 左侧导航栏 */
+        .sidebar {
+            width: 250px;
+            background-color: #2c3e50;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .sidebar .menu {
+            padding: 20px;
+            margin-top: 100px;
+        }
+
+        .sidebar .menu ul {
+            list-style: none;
+        }
+
+        .sidebar .menu ul li {
+            margin: 10px 0;
+        }
+
+        .sidebar .menu ul li a {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+            font-size: large;
+            cursor: pointer;
+        }
+
+        .sidebar .menu ul li a:hover {
+            background-color: #1abc9c;
+        }
+
+        .sidebar .menu ul li a i {
+            margin-right: 10px;
+        }
+
+        /* 下拉菜单样式 */
+        .dropdown > a {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+        }
+
+        .dropdown ul {
+            max-height: 0;
+            overflow: hidden;
+            flex-direction: column;
+            padding-left: 20px;
+            margin-top: 10px;
+            transition: max-height 0.3s ease-in-out;
+        }
+
+        .dropdown ul li {
+            margin: 5px 0;
+        }
+
+        .dropdown ul li a {
+            font-size: medium;
+        }
+
+        .dropdown.open ul {
+            max-height: 300px; /* 设置一个最大高度，避免下拉内容超出 */
+        }
+
+        /* 主要内容区域 */
+        .main-content {
+            width: calc(100% - 250px);
+            background-color: #ffffff;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .main-content .header {
+            margin-bottom: 20px;
+        }
+
+        .main-content .header h1 {
+            font-size: 24px;
+            color: #34495e;
+            margin-top: -120px;
+        }
+
+        .main-content .content-area {
+            width: 100%;
+            max-width: 1000px;
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            margin-top: -100px;
+        }
+
+        /* 页脚 */
+        footer {
+            height: 40px;
+            background-color: #34495e;
+            color: white;
+            text-align: center;
+            line-height: 40px;
+            position: relative;
+            width: 100%;
+        }
+
+        /* 响应式支持 */
+        @media screen and (max-width: 768px) {
+            .sidebar {
+                width: 200px;
+            }
+
+            .navbar .logo {
+                font-size: 18px;
+            }
+
+            .main-content {
+                padding: 10px;
+            }
+        }
+
+        .menu {
+            font-weight: bold;
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const dropdowns = document.querySelectorAll('.dropdown > a');
+            dropdowns.forEach((dropdown) => {
+                dropdown.addEventListener('click', (event) => {
+                    event.preventDefault();
+                    const parent = dropdown.parentElement;
+                    parent.classList.toggle('open');
+                });
+            });
+        });
+    </script>
+</head>
+<body>
+    <form id="form1" runat="server">
+        <!-- 顶部导航栏 -->
+        <div class="navbar">
+            <div class="logo">滴滴打船 - 管理后台</div>
+            <div class="admin-info">
+                <span>欢迎您，<asp:Label ID="Label1" runat="server" Text="Label"></asp:Label></span>
+                <asp:Button ID="btnLogout" runat="server" Text="退出登录" CssClass="logout-button" OnClick="btnLogout_Click" />
+            </div>
+        </div>
+
+        <!-- 主布局 -->
+        <div class="layout">
+            <!-- 左侧导航栏 -->
+            <aside class="sidebar">
+                <div class="menu">
+                    <ul>
+                        
+                                <li><a href="AllowShip.aspx"><i class="fas fa-check-circle"></i>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp 审核船只</a></li>
+                                <li><a href="CheckShip.aspx"><i class="fas fa-map-marker-alt"></i>&nbsp&nbsp&nbsp&nbsp&nbsp &nbsp 查看船只位置</a></li>
+                                <li><a href="ShipController.aspx"><i class="fas fa-info-circle"></i>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp 船只信息管理</a></li>
+                           
+                        <li><a href="http://localhost:51058/Admin/UserController.aspx"><i class="fas fa-users"></i>&nbsp&nbsp&nbsp&nbsp&nbsp 用户管理</a></li>
+                        
+                    </ul>
+                </div>
+            </aside>
+
+            <!-- 主要内容区域 -->
+            <main class="main-content">
+                <div class="header">
+                    <h1>欢迎来到管理员后台船只管理页面</h1>
+                </div>
+                <div class="content-area">
+                    <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server">
+                        <p>请选择左侧功能开始管理。</p>
+                    </asp:ContentPlaceHolder>
+                </div>
+            </main>
+        </div>
+
+        <!-- 页脚 -->
+        <footer>
+            滴滴打船 © 2024. 版权所有
+        </footer>
+    </form>
+</body>
+</html>

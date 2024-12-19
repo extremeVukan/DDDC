@@ -1,0 +1,172 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeFile="OrderMasterPage.master.cs" Inherits="OrderForm_OrderMasterPage" %>
+
+<%@ Register Src="~/UserControl/MessageNotification.ascx" TagPrefix="uc1" TagName="MessageNotification" %>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>创建订单</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <style>
+        /* 通用样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f9f9f9;
+            color: #333;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        a:hover {
+            color: #1abc9c;
+        }
+
+        /* 顶部导航栏样式 */
+        .navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #34495e;
+    color: white;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.navbar .logo {
+    font-size: 24px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.navbar .logo i {
+    font-size: 24px;
+    color: #1abc9c;
+}
+
+.navbar .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.navbar .nav-links a {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: white;
+    font-size: 16px;
+    transition: color 0.3s;
+    text-decoration: none;
+}
+
+.navbar .nav-links a:hover {
+    color: #1abc9c;
+}
+
+.navbar .nav-links i {
+    font-size: 18px;
+}
+
+/* 消息红点样式 */
+.notification {
+    position: relative;
+    display: inline-block;
+}
+
+.notification .badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    padding: 5px 10px;
+    border-radius: 50%;
+    background-color: red;
+    color: white;
+    font-size: 12px;
+}
+
+        /* 页脚样式 */
+        footer {
+            text-align: center;
+            padding: 10px;
+            margin-top: 20px;
+            background-color: #34495e;
+            color: white;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <form id="form1" runat="server">
+        <!-- 顶部导航栏 -->
+        <header class="navbar">
+        <div class="logo">
+            <i class="fas fa-ship"></i> 滴滴打船
+        </div>
+        <nav class="nav-links">
+            <!-- 首页 -->
+            <a href="http://localhost:51058/index.aspx">
+                <i class="fas fa-home"></i> 首页
+            </a>
+            
+            <!-- 消息 -->
+            <div class="nav-item notification">
+                <a href="http://localhost:51058/index.aspx">
+                    <i class="fas fa-envelope"></i> 消息
+                </a>
+                <uc1:MessageNotification ID="MessageNotification" runat="server" />
+            </div>
+
+            <!-- 订单记录 -->
+            <a href="http://localhost:51058/ClientOrder/COrder.aspx">
+                <i class="fas fa-file-alt"></i> 订单记录
+            </a>
+
+            <!-- 个人中心 -->
+            <a href="http://localhost:51058/SelifInfo_Web/Self_Info.aspx">
+                <i class="fas fa-user"></i> 个人中心
+            </a>
+            
+            <!-- 退出登录 -->
+            <a href="#" onclick="confirmLogout()">
+                <i class="fas fa-sign-out-alt"></i> 退出登录
+            </a>
+
+            <script type="text/javascript">
+                function confirmLogout() {
+                    if (confirm('是否退出登录？')) {
+                        setTimeout(function () {
+                            window.location.href = 'http://localhost:51058/login.aspx';
+                        }, 100);
+                    }
+                }
+            </script>
+        </nav>
+    </header>
+
+        <!-- 主内容区域 -->
+        <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server">
+
+        </asp:ContentPlaceHolder>
+
+        <!-- 页脚 -->
+        <footer>
+            滴滴打船 © 2024. 版权所有.
+        </footer>
+    </form>
+</body>
+</html>

@@ -1,0 +1,337 @@
+﻿ <%@ Master Language="C#" AutoEventWireup="true" CodeFile="Index.master.cs" Inherits="Index" %>
+
+<%@ Register Src="~/UserControl/UserStatus.ascx" TagPrefix="uc1" TagName="UserStatus" %>
+
+<%@ Register Src="~/UserControl/MessageNotification.ascx" TagPrefix="uc1" TagName="MessageNotification" %>
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <script type="text/javascript" src="https://api.map.baidu.com/api?v=3.0&ak=EAk6CzkY3oWmsIFib3VBNijhD7MGWCaC"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <title>滴滴打船</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <style type="text/css">
+        body {
+            margin: 0 auto;
+            padding: 0;
+            overflow-x: hidden;
+            overflow-y:auto;
+            width: 1900px;
+            height: 100%;
+            display: flex;
+            justify-content: center; /* 水平居中 */
+            align-items: center; /* 垂直居中 */
+            background-color: rgba(202, 240, 248, 0.7);
+            
+            
+        }
+        .wrapper {
+            width: 100%; /* 固定的页面宽度 */
+            transform: scale(1); /* 初始缩放比例为1 */
+            transform-origin: top left; /* 缩放的中心 */
+            transition: transform 0.2s ease-out;
+        }
+         .nav1 {
+            width: 100%;
+            background-color: #333333;
+            height: 100px;
+            display: flex;
+            align-items: center;
+        }
+
+        nav {
+            width: 100%;
+            display: flex;
+            align-items: center;
+        }
+
+        .navp {
+            margin-left: 30%;
+        }
+
+        .navp img {
+            height: 60px;
+            vertical-align: middle;
+            margin-right:250px;
+        }
+
+        nav > div {
+            margin-left: 50px;
+            text-align: center;
+            color: white;
+            font-size: large;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+        }
+
+        nav > div a {
+            color: white;
+            text-decoration: none;
+            margin-left: 8px;
+        }
+
+        nav > div i {
+            font-size: 20px;
+        }
+
+        /* 消息红点 */
+        .notification {
+            position: relative;
+            display: inline-block;
+        }
+
+        .notification .badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            padding: 5px 10px;
+            border-radius: 50%;
+            background-color: red;
+            color: white;
+            font-size: 12px;
+        }
+        .backP img {
+            width: 100%;
+            height: auto;
+            
+            z-index: -1;
+            position: absolute;
+            top: 0;
+        }
+        .Son2 {
+            width: 100%;
+            height: 300px;
+            position: absolute;
+        }
+        .content{
+        	border: 1px white solid;
+        	height: 500px;
+        	width: 500px;
+        	margin-left: 22%;
+        	background-color: rgba(0, 0, 0, 0.5); /* 背景透明度设置为0.5 */
+            color: white; /* 内容颜色 */
+           border-radius: 100px;
+           float: left;
+           position: relative;
+           margin-top:20px;
+        }
+        
+        .content2{
+        	border: 1px white solid;
+        	height: 50px;
+        	width: 500px;
+        	float: left;
+        	background-color: rgba(0, 0, 0, 0.5); /* 背景透明度设置为0.5 */
+            color: white; /* 内容颜色 */
+           border-radius: 100px;
+           margin-left: 100px;
+           margin-top:20px;
+           text-align: center;
+        }
+        .content3{
+        	border: 1px white solid;
+        	height: 400px;
+        	width: 500px;
+        	float: left;
+        	background-color: rgba(0, 0, 0, 0.5); /* 背景透明度设置为0.5 */
+            color: white; /* 内容颜色 */
+           border-radius: 100px;
+           margin-left: -500px;
+           margin-top: 110px;
+           text-align: center;
+        }
+        
+        .content4{
+        	
+        	height: 800px;
+        	width: 1700px;
+        	margin-top: 36px;
+        	float: none;
+        	border: 4px lightblue solid;
+        	margin-top: 31.25%;
+        	background-color: rgba(225, 225, 225, 0.5); /* 背景透明度设置为0.5 */
+            color: white; /* 内容颜色 */
+           border-radius: 50px;
+           margin-left: 100px;
+        }
+        .position{
+        	
+        	width: 400px;
+        	height: 770px;
+        	border: 3px gray solid;
+        	border-radius:50px ;
+        	float: left;
+        	margin-left: 6px;
+        	margin-top: 10px;
+        }
+       /* 父容器：明确大小 */
+.list {
+    margin-top: 10px;
+    width: 1250px; /* 父容器宽度 */
+    height: 770px; /* 父容器高度 */
+    float: left;
+    border: 3px gray solid;
+    border-radius: 50px;
+    margin-left: 30px;
+    overflow: hidden; /* 隐藏超出的内容 */
+    position: relative; /* 确保子元素绝对定位时相对于父容器 */
+}
+
+/* 子容器：让内容适应父容器大小 */
+
+
+        .radius{
+            border-radius:20px
+        }
+        
+        .tdleft{
+    text-align:left;
+}
+.tdright{
+    text-align:right;
+}
+a{
+    text-decoration:none;
+}
+
+        /* 让网页缩小时整体缩放 */
+        @media screen and (max-width: 1200px) {
+            .wrapper {
+                transform: scale(0.8); /* 缩放到80% */
+            }
+        }
+        @media screen and (max-width: 1000px) {
+            .wrapper {
+                transform: scale(0.6); /* 缩放到60% */
+            }
+        }
+        @media screen and (max-width: 800px) {
+            .wrapper {
+                transform: scale(0.5); /* 缩放到50% */
+            }
+        }
+        form input {
+    padding: 10px;
+    
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+        form label {
+    
+    font-weight: bold;
+}
+        form button {
+            text-align:center;
+    padding: 10px;
+    background-color: #1abc9c;
+    border: none;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+        
+        
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <form runat="server">
+        <div class="father">
+            <div class="nav1">
+                <nav>
+                    <!-- Logo -->
+                        <div class="navp">
+                            <img src="study/img/logo.png" alt="Logo" />
+                        </div>
+                        <!-- 首页 -->
+                        <div>
+                            <i class="fas fa-home"></i>
+                            <a href="http://localhost:51058/index.aspx">首页</a>
+                            
+                        </div>
+                            
+                            <div>
+                            <i class="fas fa-envelope"></i>
+                            <a href="http://localhost:51058/SelifInfo_Web/News.aspx">消息</a>
+                            <div class="notification">
+                                <uc1:MessageNotification ID="MessageNotification" runat="server" />
+                            </div>
+                        </div>
+
+
+
+                        <!-- 关于我们 -->
+                        
+                        <!-- 用户中心 -->
+                        <div>
+                            <i class="fas fa-user"></i>
+                            <a href="http://localhost:51058/SelifInfo_Web/Self_Info.aspx">用户中心</a>
+                        </div>
+                </nav>
+            </div>
+            
+            <div class="Son2">
+                <div class="backP"><img src="study/img/adver.jpg" alt="广告图"/></div>
+                
+                
+                
+                
+                <div class="content">
+                                <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server">
+</asp:ContentPlaceHolder>
+            	</div>
+            	
+            	<div class="content2">
+            		                <div style="margin-top:10px;margin-left:30px">
+                                        
+                                        <uc1:UserStatus ID="UserStatus1" runat="server" />
+                                        
+</div>
+                                		<asp:ContentPlaceHolder ID="ContentPlaceHolder2" runat="server">
+                        
+</asp:ContentPlaceHolder>
+            	</div>
+            	
+            	<div class="content3">
+            		                <asp:ContentPlaceHolder ID="ContentPlaceHolder3" runat="server">
+</asp:ContentPlaceHolder>
+            	</div>
+            	<div class="Button">
+            		            		                <asp:ContentPlaceHolder ID="ContentPlaceHolder6" runat="server">
+</asp:ContentPlaceHolder>
+            	</div>
+            	
+            	<div class="content4">
+            		<div class="position">
+            			                <asp:ContentPlaceHolder ID="ContentPlaceHolder4" runat="server">
+</asp:ContentPlaceHolder>
+            		</div>
+            		
+            		<div class="list">
+            			                <asp:ContentPlaceHolder ID="ContentPlaceHolder5" runat="server">
+</asp:ContentPlaceHolder>
+            		</div>
+            		
+            		
+            	</div>
+            	
+            	
+            	
+            	
+            
+            </div>
+            
+        </div>
+            </form>
+    </div>
+    
+ 
+</body>
+</html>
+

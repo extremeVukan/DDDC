@@ -1,0 +1,249 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeFile="MasterPage.master.cs" Inherits="MasterPage" %>
+
+<%@ Register Src="~/UserControl/UserStatus.ascx" TagPrefix="uc1" TagName="UserStatus" %>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <title>滴滴打船</title>
+    <style type="text/css">
+        body {
+            margin: 0 auto;
+            padding: 0;
+            overflow-x: hidden;
+            width: 1900px;
+            height: 100%;
+            display: flex;
+            justify-content: center; /* 水平居中 */
+            align-items: center; /* 垂直居中 */
+            background-color: rgba(202, 240, 248, 0.7);
+            
+        }
+        .wrapper {
+            width: 100%; /* 固定的页面宽度 */
+            transform: scale(1); /* 初始缩放比例为1 */
+            transform-origin: top left; /* 缩放的中心 */
+            transition: transform 0.2s ease-out;
+            
+        }
+        .nav1 {
+            width: 100%;
+            justify-content: center;
+            background-color: #333333;
+            height: 100px;
+            border-radius:10px;
+            font-weight:bold;
+        }
+        nav {
+            width: 100%;
+            background-color: #333333;
+            
+        }
+        .navp {
+            width: 30%;
+            margin-left: 20%;
+            margin-right: 200px;
+        }
+        nav > div {
+            margin-top: 20px;
+            float: left;
+            text-align: center;
+            color: white;
+            font-size: large;
+        }
+        
+        
+        nav > div:nth-of-type(n+2):nth-of-type(-n+9) {
+            width: auto;
+            padding: 23px;
+        }
+        .backP img {
+            width: 100%;
+            height: 900px;
+            z-index: -1;
+            position: absolute;
+            top: 0;
+            border-radius:10px;
+        }
+        .Son2 {
+            width: 100%;
+            height: 300px;
+            position: absolute;
+            
+        }
+        .content {
+            border: 1px white solid;
+            height: 500px;
+            width: 500px;
+            margin-top:100px;
+            margin-left: 22%;
+            background-color: rgba(0, 0, 0, 0.5); /* 背景透明度设置为0.5 */
+            color: white; /* 内容颜色 */
+            border-radius: 100px;
+            float: left;
+            position: relative;
+            text-align: center;
+            
+        }
+        
+        .content2 {
+            margin-top:100px;
+            border: 1px white solid;
+            height: 50px;
+            width: 500px;
+            float: left;
+            background-color: rgba(0, 0, 0, 0.5); /* 背景透明度设置为0.5 */
+            color: white; /* 内容颜色 */
+            border-radius: 100px;
+            margin-left: 100px;
+            text-align: center;
+        }
+        .content3 {
+            border: 1px white solid;
+            height: 400px;
+            width: 500px;
+            float: left;
+            background-color: rgba(0, 0, 0, 0.5); /* 背景透明度设置为0.5 */
+            color: white; /* 内容颜色 */
+            border-radius: 100px;
+            margin-left: -500px;
+            margin-top: 90px;
+            text-align: center;
+            margin-top:200px;
+            position: relative;
+            background-image:url("study/img/adver.jpg");
+            
+        }
+        .tdleft{
+            text-align:left;
+        }
+        /* Carousel styling */
+        
+        form label {
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+        form input {
+            padding: 10px;
+    
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        form button {
+            padding: 10px;
+            background-color: #1abc9c;
+            border: none;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+        form button:hover {
+            background-color: #16a085;
+        }
+
+        .order-list {
+            list-style-type: none;
+        }
+
+        .order-list li {
+            padding: 10px;
+            background-color: #ecf0f1;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+        a{
+            text-decoration:none;
+        }
+        
+
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <form runat="server">
+            <div class="father">
+                <div class="nav1">
+                    <nav>
+                        <div class="navp"><img src="study/img/logo.png" alt="Logo"/></div>
+                        <div><a href="login.aspx" style="color:white">首页</a></div>
+                        
+                          
+                        <div><a href="http://localhost:51058/SelifInfo_Web/Self_Info.aspx" style="color:white">用户设置</a></div>
+                    </nav>
+                </div>
+                
+                <div class="Son2">
+                    <div class="backP"><img src="study/img/adver.jpg" alt="广告图"/></div>
+                    
+                    <div class="content">
+                        <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server">
+                        </asp:ContentPlaceHolder>
+                    </div>
+                    
+                    <div class="content2">
+                        <div style="margin-top:10px">
+                            <uc1:UserStatus runat="server" ID="UserStatus" />
+                        </div>
+                        <asp:ContentPlaceHolder ID="ContentPlaceHolder2" runat="server">
+                        </asp:ContentPlaceHolder>
+                    </div>
+                    
+                    <div class="content3">
+                        
+                        
+                        <asp:ContentPlaceHolder ID="ContentPlaceHolder3" runat="server">
+                        </asp:ContentPlaceHolder>
+                    </div>
+                    
+                    <div class="content4">
+                        <asp:ContentPlaceHolder ID="ContentPlaceHolder4" runat="server">
+                        </asp:ContentPlaceHolder>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const imagesContainer = document.querySelector(".carousel-images");
+            const images = document.querySelectorAll(".carousel-images img");
+            const prevButton = document.querySelector(".carousel-prev");
+            const nextButton = document.querySelector(".carousel-next");
+
+            let currentIndex = 0;
+
+            function showSlide(index) {
+                imagesContainer.style.transform = `translateX(-${index * 100}%)`;
+            }
+
+            function nextSlide() {
+                currentIndex = (currentIndex + 1) % images.length;
+                showSlide(currentIndex);
+            }
+
+            function prevSlide() {
+                currentIndex = (currentIndex - 1 + images.length) % images.length;
+                showSlide(currentIndex);
+            }
+
+            nextButton.addEventListener("click", nextSlide);
+            prevButton.addEventListener("click", prevSlide);
+
+            // 自动轮播，每隔3秒切换图片
+            setInterval(nextSlide, 3000);
+        });
+    </script>
+</body>
+</html>
+

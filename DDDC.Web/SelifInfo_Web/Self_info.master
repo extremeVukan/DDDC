@@ -1,0 +1,232 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeFile="Self_info.master.cs" Inherits="SelifInfo_Web_Self_info"  %>
+
+<%@ Register Src="~/UserControl/MessageNotification.ascx" TagPrefix="uc1" TagName="MessageNotification" %>
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <script type="text/javascript" src="https://api.map.baidu.com/api?v=3.0&ak=EAk6CzkY3oWmsIFib3VBNijhD7MGWCaC"></script>
+    <meta charset="UTF-8">
+    <title>个人信息管理</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <style type="text/css">
+        /* 之前的 CSS 样式代码 */
+        /* 通用样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            margin: 0 auto;
+            padding: 0;
+            background: linear-gradient(135deg, #74b9ff, #0984e3);
+            color: #333;
+            display: flex;
+            justify-content: center; /* 水平居中 */
+            align-items: center; /* 垂直居中 */
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+        }
+
+        .container {
+            display: flex;
+            height: 90vh;
+            width: 95vw;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        /* 侧边导航栏 */
+        .sidebar {
+            width: 300px;
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+        }
+
+        .profile {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .profile-img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            margin-bottom: 15px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .username {
+            font-size: 24px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .email {
+            font-size: 14px;
+            color: white;
+            margin-top: 5px;
+        }
+
+        .nav {
+            margin-top: 40px;
+            flex-grow: 1;
+        }
+
+        .nav-item {
+            list-style: none;
+            padding: 15px 10px;
+            margin: 10px 0;
+            cursor: pointer;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            transition: all 0.3s ease-in-out;
+            display: flex;
+            align-items: center;
+            position:relative;
+        }
+
+        .nav-item:hover {
+            background-color: #1abc9c;
+            transform: scale(1.05);
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .nav-item a {
+            color: white;
+            text-decoration: none;
+            display: block;
+            width: 100%;
+            margin-left: 10px;
+        }
+
+        .nav-item i {
+            font-size: 20px;
+        }
+
+        /* 主内容区 */
+        .main-content {
+            flex-grow: 1;
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            padding: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .content1 {
+            width: 90%;
+            height: 85%;
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+            overflow: auto;
+            color: white;
+            background: #34495e;
+            overflow:hidden;
+        }
+
+        h2 {
+            color: white;
+            font-size: 28px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+    </style>
+</head>
+<body>
+    <form id="form1" runat="server">
+        <div class="container">
+            <!-- 侧边导航栏 -->
+            <aside class="sidebar">
+                <div class="profile">
+                    <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server">
+                        <!-- 用户头像及基本信息 -->
+                    </asp:ContentPlaceHolder>
+                </div>
+                <nav class="nav">
+                    <ul>
+                        <li class="nav-item">
+                            <i class="fas fa-user"></i>
+                            <a href="Self_Info.aspx">账户设置</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <i class="fas fa-clipboard-list"></i>
+                            <a href="http://localhost:51058/ClientOrder/COrder.aspx">订单管理</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <i class="fas fa-ship"></i>
+                            <a href="ShipReg.aspx">船舶</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <i class="fas fa-envelope"></i>
+                            <a href="http://localhost:51058/SelifInfo_Web/News.aspx#">消息中心</a>
+                            <div><uc1:MessageNotification runat="server" id="MessageNotification1" /></div>
+                            
+                        </li>
+
+                        <li class="nav-item">
+                            <i class="fas fa-home"></i>
+                            <a href="#" onclick="confirmGoindex()">返回首页</a>
+                        </li>
+
+                        <li class="nav-item">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <a href="#" onclick="confirmLogout()">退出登录</a>
+                    </li>
+
+                        <script type="text/javascript">
+                            function confirmLogout() {
+                                if (confirm('是否退出登录？')) {
+                                    setTimeout(function () {
+                                        window.location.href = 'http://localhost:51058/login.aspx';
+                                    }, 100);
+                                }
+                            }
+                            function confirmGoindex() {
+                                if (confirm('是否前往主页？')) {
+                                    setTimeout(function () {
+                                        window.location.href = 'http://localhost:51058/index.aspx';
+                                    }, 100);
+                                }
+                            }
+                        </script>
+
+                    </ul>
+                </nav>
+            </aside>
+
+            <!-- 主内容区 -->
+            <div class="main-content">
+                <div class="content1">
+                    <asp:ContentPlaceHolder ID="ContentPlaceHolder2" runat="server">
+                        <!-- 主体内容区域 -->
+                    </asp:ContentPlaceHolder>
+                </div>
+            </div>
+        </div>
+    </form>
+</body>
+</html>
+

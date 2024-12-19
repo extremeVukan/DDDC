@@ -1,0 +1,96 @@
+﻿<?xml version="1.0" encoding="utf-8"?><Database Name="DIDIDACHUAN" Class="DataClasses1DataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+  <Connection Mode="AppSettings" ConnectionString="Data Source=.;Initial Catalog=DIDIDACHUAN;Integrated Security=True;Encrypt=True;Trust Server Certificate=True" SettingsObjectName="DDDC.DAL.Properties.Settings" SettingsPropertyName="DIDIDACHUANConnectionString" Provider="System.Data.SqlClient" />
+  <Table Name="dbo.OrderForm" Member="OrderForm">
+    <Type Name="OrderForm">
+      <Column Name="OrderID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="OrderNumber" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="ClientID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="ShipName" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="ShipID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="OwnerID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="OwnerName" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="PrePosition" Type="System.String" DbType="NVarChar(200)" CanBeNull="true" />
+      <Column Name="Destination" Type="System.String" DbType="NVarChar(200)" CanBeNull="true" />
+      <Column Name="Notes" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
+      <Column Name="Start_Time" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="End_Time" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="Comment" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
+      <Column Name="img" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="Distance" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="Status" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.ShipHandle" Member="ShipHandle">
+    <Type Name="ShipHandle">
+      <Column Name="ship_id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="owner_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="ship_name" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="ship_type" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="capacity" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="ship_status" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="ship_reg_time" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="Picture" Type="System.String" DbType="NVarChar(200)" CanBeNull="true" />
+      <Column Name="province" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="city" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="Position" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="IsAllowed" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="Admin_name" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.ships" Member="ships">
+    <Type Name="ships">
+      <Column Name="ship_id" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="owner_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="ship_name" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="ship_type" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="capacity" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="ship_status" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="ship_reg_time" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="Picture" Type="System.String" DbType="NVarChar(200)" CanBeNull="true" />
+      <Column Name="province" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="city" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="Position" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.orderT" Member="orderT">
+    <Type Name="orderT">
+      <Column Name="Listid" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="order_id1" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="orderNumber" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="passenger_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="ship_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="order_status" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="star_location" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
+      <Column Name="end_location" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
+      <Column Name="ship_locetion" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
+      <Column Name="start_time" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="end_time" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="total_price" Type="System.Decimal" DbType="Decimal(10,2)" CanBeNull="true" />
+      <Column Name="payment_status" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.ordernews" Member="ordernews">
+    <Type Name="ordernews">
+      <Column Name="news_id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="headText" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
+      <Column Name="Client_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Driver_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="message" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
+      <Column Name="message_type" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="send_time" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="read_status" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.users" Member="users">
+    <Type Name="users">
+      <Column Name="user_id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="user_name" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="password" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="email" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="Phone" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="photo" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
+      <Column Name="Status" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="UserSatus" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+    </Type>
+  </Table>
+</Database>
