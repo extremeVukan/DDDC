@@ -39,6 +39,7 @@ namespace DDDC.BLL
             DateTime startTime,
             DateTime endTime,
             decimal totalPrice,
+            
             string paymentStatus)
         {
             // 创建一个新的订单对象
@@ -55,6 +56,7 @@ namespace DDDC.BLL
                 start_time = startTime,
                 end_time = endTime,
                 total_price = totalPrice,
+                estimate  = "0",
                 payment_status = paymentStatus
             };
 
@@ -87,10 +89,16 @@ namespace DDDC.BLL
             ss.payment_status = "已支付";
             ss.total_price = price;
             db.SubmitChanges();
-              
-
         }
 
+        public void SubmitEst(String OrderNum, string evaluate)
+        {
+            var ss = db.orderT.SingleOrDefault(o => o.orderNumber == OrderNum);
+            ss.estimate = evaluate;
+            db.SubmitChanges();
+
+
+        }
 
         public decimal GetTodayIncome(int shipId)
         {
@@ -146,6 +154,74 @@ namespace DDDC.BLL
 
             return income;
         }
+
+
+        public orderT GetorderTByOrdN(string ordn)
+        {
+            return (from c in db.orderT
+                    where c.orderNumber == ordn
+                    select c).FirstOrDefault();
+
+        }
+
+
+
+        public class OrderCommentData
+        {
+            public string OrderNumber { get; set; }
+            public string Estimate { get; set; }
+            public string Comment { get; set; }
+            public DateTime OrderDate { get; set; }
+        }
+        public List<OrderCommentData> GetCommentsByShipId(int shipId)
+        {
+            var query = from orderT in db.orderT
+                        join orderForm in db.OrderForm on orderT.orderNumber equals orderForm.OrderNumber // 使用订单号进行关联
+                        where orderT.ship_id == shipId
+                        group new { orderT, orderForm } by orderT.orderNumber into groupedOrders // 按订单号分组
+                        select new OrderCommentData
+                        {
+                            OrderNumber = groupedOrders.Key, // 订单号
+                            Estimate = groupedOrders
+                                .Select(o => o.orderT.estimate)
+                                .FirstOrDefault(), // 取评分
+                            Comment = groupedOrders
+                                .Select(o => o.orderForm.Comment)
+                                .FirstOrDefault(), // 取评论
+                            OrderDate = groupedOrders
+                                .Select(o => o.orderT.end_time ?? DateTime.Today)
+                                .FirstOrDefault() // 取日期
+                        };
+
+            return query.ToList();
+        }
+
+
+        public class OrderPay
+        {
+            public string OrderNumber { get; set; }
+            public decimal TotalPrice { get; set; }
+           
+            
+        }
+
+        public List<OrderPay> GetOrdersByShipId(int shipId)
+        {
+            var query = from orderT in db.orderT
+                        where orderT.ship_id == shipId && orderT.payment_status =="已支付"
+                        select new OrderPay
+                        {
+                            OrderNumber = orderT.orderNumber,
+                            TotalPrice =Convert.ToDecimal( orderT.total_price)
+                            
+                        };
+
+            return query.ToList();
+        }
+
+
+
+
 
 
 

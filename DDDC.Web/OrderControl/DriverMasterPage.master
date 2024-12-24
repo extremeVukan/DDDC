@@ -270,7 +270,10 @@
                 <a href="http://localhost:51058/OrderControl/HandlingOrder.aspx">订单管理</a>
                 <a href="http://localhost:51058/OrderControl/ProducingOrder.aspx">正在进行的订单</a>
                 <a href="http://localhost:51058/OrderControl/FinishedOrder.aspx">已完成订单</a>
+                <a href="http://localhost:51058/OrderControl/CheckComment.aspx">查看评价</a>
+                <a href="http://localhost:51058/OrderControl/CheckIncome.aspx">查看收入</a>
                 <a href="http://localhost:51058/SelifInfo_Web/Self_Info.aspx">返回</a>
+                
             </div>
         </aside>
 

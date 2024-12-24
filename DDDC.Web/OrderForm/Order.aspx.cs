@@ -3,6 +3,7 @@ using DDDC.DAL;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Policy;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -12,6 +13,7 @@ public partial class OrderForm_Order : System.Web.UI.Page
 {
     Userservice userService = new Userservice();
     DriveService driveService = new DriveService();
+    MessageServices MsgStrv = new MessageServices();
     protected void Page_Load(object sender, EventArgs e)
     {
         
@@ -47,39 +49,67 @@ public partial class OrderForm_Order : System.Web.UI.Page
             {
                 txtShipName.Text = Session["CShipName"].ToString();
             }
-
+        else
+        {
+            txtShipName.Text = "待接单";
+        }
+            //1
             if (Session["CShipID"] != null)
-            {
-                txtShipid.Text = Session["CShipID"].ToString();
-            }
-
+        {
+            txtShipid.Text = Session["CShipID"].ToString();
+        }
+        else
+        {
+            txtShipid.Text = "0";
+        }
+            //2
             if (Session["CMaxClient"] != null)
             {
                 txtMaxCapacity.Text = Session["CMaxClient"].ToString();
             }
-
-            if (Session["CPosition"] != null)
+            else
+            {
+                txtMaxCapacity.Text = "待接单";
+            }
+            //3
+             if (Session["CPosition"] != null)
             {
                 txtDestination.Text = Session["CPosition"].ToString();
             }
-
-            if (Session["CImgUrl"] != null)
+            else
+            {
+            txtDestination.Text = "待接单";
+            }
+        //4
+        if (Session["CImgUrl"] != null)
             {
                 imgShipPhoto.ImageUrl = Session["CImgUrl"].ToString();  // 设置船只照片
             }
+            else
+            {
+                imgShipPhoto.ImageUrl = "~/UserImg/暂无图片.gif";
+            }
+        //5
 
 
 
+        if (txtShipid.Text != "0")
+        {
+            int shipid = Convert.ToInt32(txtShipid.Text);
 
-
-            int shipid =Convert.ToInt32(txtShipid.Text);
-
-        var GetShips = driveService.GetShipByID(shipid);
-        // 示例：司机姓名可以通过额外查询填充
-        var Getusers =userService.GetUserByID(Convert.ToInt32( GetShips.owner_id));
-        txtownerName.Text = Getusers.user_name;
-        Session["ShipPosition"] = GetShips.province + GetShips.city + GetShips.Position;
-        Session["SOwnerID"] = GetShips.owner_id;
+            var GetShips = driveService.GetShipByID(shipid);
+            // 示例：司机姓名可以通过额外查询填充
+            var Getusers = userService.GetUserByID(Convert.ToInt32(GetShips.owner_id));
+            txtownerName.Text = Getusers.user_name;
+            Session["ShipPosition"] = GetShips.province + GetShips.city + GetShips.Position;
+            Session["SOwnerID"] = GetShips.owner_id;
+        }
+        else
+        {
+            txtownerName.Text = "待接单"; // 如果没有船只信息，设置为待接单
+            Session["ShipPosition"] = "待接单"; // 设置起始位置为待接单
+            Session["SOwnerID"] = 0; // 假设没有司机时设置为0或其他默认值
+        }
             }
     
 
@@ -141,9 +171,12 @@ public partial class OrderForm_Order : System.Web.UI.Page
         // 调用AddOrder方法提交数据到数据库
         orderService.AddOrder(orderNumber, clientId, shipName, shipId,owner_id, ownerName, prePosition,
                               destination, notes, startTime, endTime, "无",Simg, meters,status);
-        
+
+        string HeadText = "新的订单";
+        string Msg = "您有新的订单，请注意接收!";
+        MsgStrv.addMsg(HeadText, owner_id, owner_id, Msg, "订单", DateTime.Now, "未读");
         // 提交成功后可以跳转或显示提示
-        
+
         ScriptManager.RegisterStartupScript(this, this.GetType(), "alert",
         "alert('订单提交成功！'); window.location.href = 'http://localhost:51058/ClientOrder/COrder.aspx';", true);
     }

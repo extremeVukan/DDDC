@@ -237,6 +237,7 @@
                                 <li><a href="ShipController.aspx"><i class="fas fa-info-circle"></i>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp 船只信息管理</a></li>
                            
                         <li><a href="http://localhost:51058/Admin/UserController.aspx"><i class="fas fa-users"></i>&nbsp&nbsp&nbsp&nbsp&nbsp 用户管理</a></li>
+                        <li><a href="http://localhost:51058/Admin/RefundController.aspx"><i class="fas fa-users"></i>&nbsp&nbsp&nbsp&nbsp&nbsp 退款管理</a></li>
                         
                     </ul>
                 </div>

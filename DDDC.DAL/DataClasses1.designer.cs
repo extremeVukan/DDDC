@@ -39,15 +39,18 @@ namespace DDDC.DAL
     partial void Insertships(ships instance);
     partial void Updateships(ships instance);
     partial void Deleteships(ships instance);
-    partial void InsertorderT(orderT instance);
-    partial void UpdateorderT(orderT instance);
-    partial void DeleteorderT(orderT instance);
     partial void Insertordernews(ordernews instance);
     partial void Updateordernews(ordernews instance);
     partial void Deleteordernews(ordernews instance);
     partial void Insertusers(users instance);
     partial void Updateusers(users instance);
     partial void Deleteusers(users instance);
+    partial void InsertorderT(orderT instance);
+    partial void UpdateorderT(orderT instance);
+    partial void DeleteorderT(orderT instance);
+    partial void InsertAfterSales(AfterSales instance);
+    partial void UpdateAfterSales(AfterSales instance);
+    partial void DeleteAfterSales(AfterSales instance);
     #endregion
 		
 		public DataClasses1DataContext() : 
@@ -104,14 +107,6 @@ namespace DDDC.DAL
 			}
 		}
 		
-		public System.Data.Linq.Table<orderT> orderT
-		{
-			get
-			{
-				return this.GetTable<orderT>();
-			}
-		}
-		
 		public System.Data.Linq.Table<ordernews> ordernews
 		{
 			get
@@ -125,6 +120,22 @@ namespace DDDC.DAL
 			get
 			{
 				return this.GetTable<users>();
+			}
+		}
+		
+		public System.Data.Linq.Table<orderT> orderT
+		{
+			get
+			{
+				return this.GetTable<orderT>();
+			}
+		}
+		
+		public System.Data.Linq.Table<AfterSales> AfterSales
+		{
+			get
+			{
+				return this.GetTable<AfterSales>();
 			}
 		}
 	}
@@ -1203,356 +1214,6 @@ namespace DDDC.DAL
 		}
 	}
 	
-	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.orderT")]
-	public partial class orderT : INotifyPropertyChanging, INotifyPropertyChanged
-	{
-		
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		private int _Listid;
-		
-		private int _order_id1;
-		
-		private string _orderNumber;
-		
-		private System.Nullable<int> _passenger_id;
-		
-		private System.Nullable<int> _ship_id;
-		
-		private string _order_status;
-		
-		private string _star_location;
-		
-		private string _end_location;
-		
-		private string _ship_locetion;
-		
-		private System.Nullable<System.DateTime> _start_time;
-		
-		private System.Nullable<System.DateTime> _end_time;
-		
-		private System.Nullable<decimal> _total_price;
-		
-		private string _payment_status;
-		
-    #region 可扩展性方法定义
-    partial void OnLoaded();
-    partial void OnValidate(System.Data.Linq.ChangeAction action);
-    partial void OnCreated();
-    partial void OnListidChanging(int value);
-    partial void OnListidChanged();
-    partial void Onorder_id1Changing(int value);
-    partial void Onorder_id1Changed();
-    partial void OnorderNumberChanging(string value);
-    partial void OnorderNumberChanged();
-    partial void Onpassenger_idChanging(System.Nullable<int> value);
-    partial void Onpassenger_idChanged();
-    partial void Onship_idChanging(System.Nullable<int> value);
-    partial void Onship_idChanged();
-    partial void Onorder_statusChanging(string value);
-    partial void Onorder_statusChanged();
-    partial void Onstar_locationChanging(string value);
-    partial void Onstar_locationChanged();
-    partial void Onend_locationChanging(string value);
-    partial void Onend_locationChanged();
-    partial void Onship_locetionChanging(string value);
-    partial void Onship_locetionChanged();
-    partial void Onstart_timeChanging(System.Nullable<System.DateTime> value);
-    partial void Onstart_timeChanged();
-    partial void Onend_timeChanging(System.Nullable<System.DateTime> value);
-    partial void Onend_timeChanged();
-    partial void Ontotal_priceChanging(System.Nullable<decimal> value);
-    partial void Ontotal_priceChanged();
-    partial void Onpayment_statusChanging(string value);
-    partial void Onpayment_statusChanged();
-    #endregion
-		
-		public orderT()
-		{
-			OnCreated();
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Listid", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
-		public int Listid
-		{
-			get
-			{
-				return this._Listid;
-			}
-			set
-			{
-				if ((this._Listid != value))
-				{
-					this.OnListidChanging(value);
-					this.SendPropertyChanging();
-					this._Listid = value;
-					this.SendPropertyChanged("Listid");
-					this.OnListidChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_order_id1", DbType="Int NOT NULL")]
-		public int order_id1
-		{
-			get
-			{
-				return this._order_id1;
-			}
-			set
-			{
-				if ((this._order_id1 != value))
-				{
-					this.Onorder_id1Changing(value);
-					this.SendPropertyChanging();
-					this._order_id1 = value;
-					this.SendPropertyChanged("order_id1");
-					this.Onorder_id1Changed();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_orderNumber", DbType="NVarChar(50)")]
-		public string orderNumber
-		{
-			get
-			{
-				return this._orderNumber;
-			}
-			set
-			{
-				if ((this._orderNumber != value))
-				{
-					this.OnorderNumberChanging(value);
-					this.SendPropertyChanging();
-					this._orderNumber = value;
-					this.SendPropertyChanged("orderNumber");
-					this.OnorderNumberChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_passenger_id", DbType="Int")]
-		public System.Nullable<int> passenger_id
-		{
-			get
-			{
-				return this._passenger_id;
-			}
-			set
-			{
-				if ((this._passenger_id != value))
-				{
-					this.Onpassenger_idChanging(value);
-					this.SendPropertyChanging();
-					this._passenger_id = value;
-					this.SendPropertyChanged("passenger_id");
-					this.Onpassenger_idChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ship_id", DbType="Int")]
-		public System.Nullable<int> ship_id
-		{
-			get
-			{
-				return this._ship_id;
-			}
-			set
-			{
-				if ((this._ship_id != value))
-				{
-					this.Onship_idChanging(value);
-					this.SendPropertyChanging();
-					this._ship_id = value;
-					this.SendPropertyChanged("ship_id");
-					this.Onship_idChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_order_status", DbType="NVarChar(50)")]
-		public string order_status
-		{
-			get
-			{
-				return this._order_status;
-			}
-			set
-			{
-				if ((this._order_status != value))
-				{
-					this.Onorder_statusChanging(value);
-					this.SendPropertyChanging();
-					this._order_status = value;
-					this.SendPropertyChanged("order_status");
-					this.Onorder_statusChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_star_location", DbType="NVarChar(255)")]
-		public string star_location
-		{
-			get
-			{
-				return this._star_location;
-			}
-			set
-			{
-				if ((this._star_location != value))
-				{
-					this.Onstar_locationChanging(value);
-					this.SendPropertyChanging();
-					this._star_location = value;
-					this.SendPropertyChanged("star_location");
-					this.Onstar_locationChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_end_location", DbType="NVarChar(255)")]
-		public string end_location
-		{
-			get
-			{
-				return this._end_location;
-			}
-			set
-			{
-				if ((this._end_location != value))
-				{
-					this.Onend_locationChanging(value);
-					this.SendPropertyChanging();
-					this._end_location = value;
-					this.SendPropertyChanged("end_location");
-					this.Onend_locationChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ship_locetion", DbType="NVarChar(255)")]
-		public string ship_locetion
-		{
-			get
-			{
-				return this._ship_locetion;
-			}
-			set
-			{
-				if ((this._ship_locetion != value))
-				{
-					this.Onship_locetionChanging(value);
-					this.SendPropertyChanging();
-					this._ship_locetion = value;
-					this.SendPropertyChanged("ship_locetion");
-					this.Onship_locetionChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_start_time", DbType="DateTime")]
-		public System.Nullable<System.DateTime> start_time
-		{
-			get
-			{
-				return this._start_time;
-			}
-			set
-			{
-				if ((this._start_time != value))
-				{
-					this.Onstart_timeChanging(value);
-					this.SendPropertyChanging();
-					this._start_time = value;
-					this.SendPropertyChanged("start_time");
-					this.Onstart_timeChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_end_time", DbType="DateTime")]
-		public System.Nullable<System.DateTime> end_time
-		{
-			get
-			{
-				return this._end_time;
-			}
-			set
-			{
-				if ((this._end_time != value))
-				{
-					this.Onend_timeChanging(value);
-					this.SendPropertyChanging();
-					this._end_time = value;
-					this.SendPropertyChanged("end_time");
-					this.Onend_timeChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_total_price", DbType="Decimal(10,2)")]
-		public System.Nullable<decimal> total_price
-		{
-			get
-			{
-				return this._total_price;
-			}
-			set
-			{
-				if ((this._total_price != value))
-				{
-					this.Ontotal_priceChanging(value);
-					this.SendPropertyChanging();
-					this._total_price = value;
-					this.SendPropertyChanged("total_price");
-					this.Ontotal_priceChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_payment_status", DbType="NVarChar(50)")]
-		public string payment_status
-		{
-			get
-			{
-				return this._payment_status;
-			}
-			set
-			{
-				if ((this._payment_status != value))
-				{
-					this.Onpayment_statusChanging(value);
-					this.SendPropertyChanging();
-					this._payment_status = value;
-					this.SendPropertyChanged("payment_status");
-					this.Onpayment_statusChanged();
-				}
-			}
-		}
-		
-		public event PropertyChangingEventHandler PropertyChanging;
-		
-		public event PropertyChangedEventHandler PropertyChanged;
-		
-		protected virtual void SendPropertyChanging()
-		{
-			if ((this.PropertyChanging != null))
-			{
-				this.PropertyChanging(this, emptyChangingEventArgs);
-			}
-		}
-		
-		protected virtual void SendPropertyChanged(String propertyName)
-		{
-			if ((this.PropertyChanged != null))
-			{
-				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-			}
-		}
-	}
-	
 	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.ordernews")]
 	public partial class ordernews : INotifyPropertyChanging, INotifyPropertyChanged
 	{
@@ -1988,6 +1649,610 @@ namespace DDDC.DAL
 					this._UserSatus = value;
 					this.SendPropertyChanged("UserSatus");
 					this.OnUserSatusChanged();
+				}
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.orderT")]
+	public partial class orderT : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private int _Listid;
+		
+		private int _order_id1;
+		
+		private string _orderNumber;
+		
+		private System.Nullable<int> _passenger_id;
+		
+		private System.Nullable<int> _ship_id;
+		
+		private string _order_status;
+		
+		private string _star_location;
+		
+		private string _end_location;
+		
+		private string _ship_locetion;
+		
+		private System.Nullable<System.DateTime> _start_time;
+		
+		private System.Nullable<System.DateTime> _end_time;
+		
+		private System.Nullable<decimal> _total_price;
+		
+		private string _estimate;
+		
+		private string _payment_status;
+		
+    #region 可扩展性方法定义
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnListidChanging(int value);
+    partial void OnListidChanged();
+    partial void Onorder_id1Changing(int value);
+    partial void Onorder_id1Changed();
+    partial void OnorderNumberChanging(string value);
+    partial void OnorderNumberChanged();
+    partial void Onpassenger_idChanging(System.Nullable<int> value);
+    partial void Onpassenger_idChanged();
+    partial void Onship_idChanging(System.Nullable<int> value);
+    partial void Onship_idChanged();
+    partial void Onorder_statusChanging(string value);
+    partial void Onorder_statusChanged();
+    partial void Onstar_locationChanging(string value);
+    partial void Onstar_locationChanged();
+    partial void Onend_locationChanging(string value);
+    partial void Onend_locationChanged();
+    partial void Onship_locetionChanging(string value);
+    partial void Onship_locetionChanged();
+    partial void Onstart_timeChanging(System.Nullable<System.DateTime> value);
+    partial void Onstart_timeChanged();
+    partial void Onend_timeChanging(System.Nullable<System.DateTime> value);
+    partial void Onend_timeChanged();
+    partial void Ontotal_priceChanging(System.Nullable<decimal> value);
+    partial void Ontotal_priceChanged();
+    partial void OnestimateChanging(string value);
+    partial void OnestimateChanged();
+    partial void Onpayment_statusChanging(string value);
+    partial void Onpayment_statusChanged();
+    #endregion
+		
+		public orderT()
+		{
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Listid", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+		public int Listid
+		{
+			get
+			{
+				return this._Listid;
+			}
+			set
+			{
+				if ((this._Listid != value))
+				{
+					this.OnListidChanging(value);
+					this.SendPropertyChanging();
+					this._Listid = value;
+					this.SendPropertyChanged("Listid");
+					this.OnListidChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_order_id1", DbType="Int NOT NULL")]
+		public int order_id1
+		{
+			get
+			{
+				return this._order_id1;
+			}
+			set
+			{
+				if ((this._order_id1 != value))
+				{
+					this.Onorder_id1Changing(value);
+					this.SendPropertyChanging();
+					this._order_id1 = value;
+					this.SendPropertyChanged("order_id1");
+					this.Onorder_id1Changed();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_orderNumber", DbType="NVarChar(50)")]
+		public string orderNumber
+		{
+			get
+			{
+				return this._orderNumber;
+			}
+			set
+			{
+				if ((this._orderNumber != value))
+				{
+					this.OnorderNumberChanging(value);
+					this.SendPropertyChanging();
+					this._orderNumber = value;
+					this.SendPropertyChanged("orderNumber");
+					this.OnorderNumberChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_passenger_id", DbType="Int")]
+		public System.Nullable<int> passenger_id
+		{
+			get
+			{
+				return this._passenger_id;
+			}
+			set
+			{
+				if ((this._passenger_id != value))
+				{
+					this.Onpassenger_idChanging(value);
+					this.SendPropertyChanging();
+					this._passenger_id = value;
+					this.SendPropertyChanged("passenger_id");
+					this.Onpassenger_idChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ship_id", DbType="Int")]
+		public System.Nullable<int> ship_id
+		{
+			get
+			{
+				return this._ship_id;
+			}
+			set
+			{
+				if ((this._ship_id != value))
+				{
+					this.Onship_idChanging(value);
+					this.SendPropertyChanging();
+					this._ship_id = value;
+					this.SendPropertyChanged("ship_id");
+					this.Onship_idChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_order_status", DbType="NVarChar(50)")]
+		public string order_status
+		{
+			get
+			{
+				return this._order_status;
+			}
+			set
+			{
+				if ((this._order_status != value))
+				{
+					this.Onorder_statusChanging(value);
+					this.SendPropertyChanging();
+					this._order_status = value;
+					this.SendPropertyChanged("order_status");
+					this.Onorder_statusChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_star_location", DbType="NVarChar(255)")]
+		public string star_location
+		{
+			get
+			{
+				return this._star_location;
+			}
+			set
+			{
+				if ((this._star_location != value))
+				{
+					this.Onstar_locationChanging(value);
+					this.SendPropertyChanging();
+					this._star_location = value;
+					this.SendPropertyChanged("star_location");
+					this.Onstar_locationChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_end_location", DbType="NVarChar(255)")]
+		public string end_location
+		{
+			get
+			{
+				return this._end_location;
+			}
+			set
+			{
+				if ((this._end_location != value))
+				{
+					this.Onend_locationChanging(value);
+					this.SendPropertyChanging();
+					this._end_location = value;
+					this.SendPropertyChanged("end_location");
+					this.Onend_locationChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ship_locetion", DbType="NVarChar(255)")]
+		public string ship_locetion
+		{
+			get
+			{
+				return this._ship_locetion;
+			}
+			set
+			{
+				if ((this._ship_locetion != value))
+				{
+					this.Onship_locetionChanging(value);
+					this.SendPropertyChanging();
+					this._ship_locetion = value;
+					this.SendPropertyChanged("ship_locetion");
+					this.Onship_locetionChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_start_time", DbType="DateTime")]
+		public System.Nullable<System.DateTime> start_time
+		{
+			get
+			{
+				return this._start_time;
+			}
+			set
+			{
+				if ((this._start_time != value))
+				{
+					this.Onstart_timeChanging(value);
+					this.SendPropertyChanging();
+					this._start_time = value;
+					this.SendPropertyChanged("start_time");
+					this.Onstart_timeChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_end_time", DbType="DateTime")]
+		public System.Nullable<System.DateTime> end_time
+		{
+			get
+			{
+				return this._end_time;
+			}
+			set
+			{
+				if ((this._end_time != value))
+				{
+					this.Onend_timeChanging(value);
+					this.SendPropertyChanging();
+					this._end_time = value;
+					this.SendPropertyChanged("end_time");
+					this.Onend_timeChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_total_price", DbType="Decimal(10,2)")]
+		public System.Nullable<decimal> total_price
+		{
+			get
+			{
+				return this._total_price;
+			}
+			set
+			{
+				if ((this._total_price != value))
+				{
+					this.Ontotal_priceChanging(value);
+					this.SendPropertyChanging();
+					this._total_price = value;
+					this.SendPropertyChanged("total_price");
+					this.Ontotal_priceChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_estimate", DbType="NVarChar(50)")]
+		public string estimate
+		{
+			get
+			{
+				return this._estimate;
+			}
+			set
+			{
+				if ((this._estimate != value))
+				{
+					this.OnestimateChanging(value);
+					this.SendPropertyChanging();
+					this._estimate = value;
+					this.SendPropertyChanged("estimate");
+					this.OnestimateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_payment_status", DbType="NVarChar(50)")]
+		public string payment_status
+		{
+			get
+			{
+				return this._payment_status;
+			}
+			set
+			{
+				if ((this._payment_status != value))
+				{
+					this.Onpayment_statusChanging(value);
+					this.SendPropertyChanging();
+					this._payment_status = value;
+					this.SendPropertyChanged("payment_status");
+					this.Onpayment_statusChanged();
+				}
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.AfterSales")]
+	public partial class AfterSales : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private int _ServicesID;
+		
+		private string _ordernumber;
+		
+		private System.Nullable<int> _UserID;
+		
+		private System.Nullable<int> _Shipid;
+		
+		private System.Nullable<System.DateTime> _ApplicationDate;
+		
+		private string _Reason;
+		
+		private string _Status;
+		
+		private string _AdminComment;
+		
+    #region 可扩展性方法定义
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnServicesIDChanging(int value);
+    partial void OnServicesIDChanged();
+    partial void OnordernumberChanging(string value);
+    partial void OnordernumberChanged();
+    partial void OnUserIDChanging(System.Nullable<int> value);
+    partial void OnUserIDChanged();
+    partial void OnShipidChanging(System.Nullable<int> value);
+    partial void OnShipidChanged();
+    partial void OnApplicationDateChanging(System.Nullable<System.DateTime> value);
+    partial void OnApplicationDateChanged();
+    partial void OnReasonChanging(string value);
+    partial void OnReasonChanged();
+    partial void OnStatusChanging(string value);
+    partial void OnStatusChanged();
+    partial void OnAdminCommentChanging(string value);
+    partial void OnAdminCommentChanged();
+    #endregion
+		
+		public AfterSales()
+		{
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ServicesID", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+		public int ServicesID
+		{
+			get
+			{
+				return this._ServicesID;
+			}
+			set
+			{
+				if ((this._ServicesID != value))
+				{
+					this.OnServicesIDChanging(value);
+					this.SendPropertyChanging();
+					this._ServicesID = value;
+					this.SendPropertyChanged("ServicesID");
+					this.OnServicesIDChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ordernumber", DbType="NVarChar(50)")]
+		public string ordernumber
+		{
+			get
+			{
+				return this._ordernumber;
+			}
+			set
+			{
+				if ((this._ordernumber != value))
+				{
+					this.OnordernumberChanging(value);
+					this.SendPropertyChanging();
+					this._ordernumber = value;
+					this.SendPropertyChanged("ordernumber");
+					this.OnordernumberChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_UserID", DbType="Int")]
+		public System.Nullable<int> UserID
+		{
+			get
+			{
+				return this._UserID;
+			}
+			set
+			{
+				if ((this._UserID != value))
+				{
+					this.OnUserIDChanging(value);
+					this.SendPropertyChanging();
+					this._UserID = value;
+					this.SendPropertyChanged("UserID");
+					this.OnUserIDChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Shipid", DbType="Int")]
+		public System.Nullable<int> Shipid
+		{
+			get
+			{
+				return this._Shipid;
+			}
+			set
+			{
+				if ((this._Shipid != value))
+				{
+					this.OnShipidChanging(value);
+					this.SendPropertyChanging();
+					this._Shipid = value;
+					this.SendPropertyChanged("Shipid");
+					this.OnShipidChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ApplicationDate", DbType="DateTime")]
+		public System.Nullable<System.DateTime> ApplicationDate
+		{
+			get
+			{
+				return this._ApplicationDate;
+			}
+			set
+			{
+				if ((this._ApplicationDate != value))
+				{
+					this.OnApplicationDateChanging(value);
+					this.SendPropertyChanging();
+					this._ApplicationDate = value;
+					this.SendPropertyChanged("ApplicationDate");
+					this.OnApplicationDateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Reason", DbType="NVarChar(50)")]
+		public string Reason
+		{
+			get
+			{
+				return this._Reason;
+			}
+			set
+			{
+				if ((this._Reason != value))
+				{
+					this.OnReasonChanging(value);
+					this.SendPropertyChanging();
+					this._Reason = value;
+					this.SendPropertyChanged("Reason");
+					this.OnReasonChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Status", DbType="NVarChar(50)")]
+		public string Status
+		{
+			get
+			{
+				return this._Status;
+			}
+			set
+			{
+				if ((this._Status != value))
+				{
+					this.OnStatusChanging(value);
+					this.SendPropertyChanging();
+					this._Status = value;
+					this.SendPropertyChanged("Status");
+					this.OnStatusChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_AdminComment", DbType="NVarChar(50)")]
+		public string AdminComment
+		{
+			get
+			{
+				return this._AdminComment;
+			}
+			set
+			{
+				if ((this._AdminComment != value))
+				{
+					this.OnAdminCommentChanging(value);
+					this.SendPropertyChanging();
+					this._AdminComment = value;
+					this.SendPropertyChanged("AdminComment");
+					this.OnAdminCommentChanged();
 				}
 			}
 		}

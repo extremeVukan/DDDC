@@ -146,17 +146,12 @@ public partial class index : System.Web.UI.Page
     protected void btnOrder_Click(object sender, EventArgs e)
     {
         var self = userService.GetUserByID(Convert.ToInt32(Session["userID"]));
-        if (self.photo == null)
+        if (self.Phone == null)
         {
             ScriptManager.RegisterStartupScript(this, this.GetType(), "alert",
                     "alert('请注册手机号！'); setTimeout(function(){ window.location.href = 'http://localhost:51058/SelifInfo_Web/Self_Info.aspx'; }, 100);", true);
         }
-        else
-        {
-            if (txtShipName.Text == "")
-            {
-                ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('请选择要乘坐的船只！');", true);
-            }
+        
             else
             {
                 if (TextBox1.Text == "" && TextBox2.Text == "" && txtcounty.Text == "")
@@ -165,10 +160,7 @@ public partial class index : System.Web.UI.Page
                 }
                 else
                 {
-                    Session["CImgUrl"] = shipImage.ImageUrl;
-                    Session["CShipName"] = txtShipName.Text;
-                    Session["CShipID"] = txtShipID.Text;
-                    Session["CMaxClient"] = txtMaxCapacity.Text;
+                    
                     Session["CPosition"] = TextBox1.Text + TextBox2.Text + txtcounty.Text;
                     Session["CHere"] = txtprovince.Text + txtcity.Text + txtposition.Text;
                     ScriptManager.RegisterStartupScript(this, this.GetType(), "alert",
@@ -177,5 +169,5 @@ public partial class index : System.Web.UI.Page
             }
         }
     }
-}
+
 

@@ -31,6 +31,10 @@
             <label for="destination">目的地:</label>
             <asp:TextBox ID="txtDestination" runat="server" ReadOnly="True"></asp:TextBox>
         </div>
+        <div class="info-group">
+    <label for="endtime">结束时间:</label>
+    <asp:TextBox ID="txtEndtime" runat="server" ReadOnly="True"></asp:TextBox>
+</div>
 
         <div class="progress-container">
             <label>订单进度:</label>

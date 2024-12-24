@@ -34,11 +34,13 @@
 
     <asp:LinqDataSource runat="server" EntityTypeName="" ID="LinqDataSource1"
         ContextTypeName="DDDC.DAL.DataClasses1DataContext"
-        TableName="OrderForm" Where="ClientID == @ClientID && Status != @Status && Status != @Status1" Select="new (OrderNumber, ClientID, ShipName, OwnerName, PrePosition, Destination, Notes, Start_Time, End_Time, img, Status, ShipID, OrderID)" OrderBy="OrderID descending">
+        TableName="OrderForm" Where="ClientID == @ClientID && Status != @Status && Status != @Status1 && Status != @Status2 && Status != @Status3" Select="new (OrderNumber, ClientID, ShipName, OwnerName, PrePosition, Destination, Notes, Start_Time, End_Time, img, Status, ShipID, OrderID)" OrderBy="OrderID descending">
         <WhereParameters>
             <asp:SessionParameter SessionField="UserID" Name="ClientID" Type="Int32"></asp:SessionParameter>
             <asp:Parameter DefaultValue="已拒绝" Name="Status" Type="String"></asp:Parameter>
             <asp:Parameter DefaultValue="已完成" Name="Status1" Type="String"></asp:Parameter>
+            <asp:Parameter DefaultValue="退款中" Name="Status2" Type="String"></asp:Parameter>
+            <asp:Parameter DefaultValue="已退款" Name="Status3" Type="String"></asp:Parameter>
         </WhereParameters>
     </asp:LinqDataSource>
 

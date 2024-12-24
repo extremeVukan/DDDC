@@ -34,6 +34,7 @@ public partial class FinishOrder_CheckFinishedOrder : System.Web.UI.Page
                 Session["UserID"] = userID;
                 var checkPhone = orderService.GetOrderByOrdrNumber(txtOrderNumber.Text);
                 var userPhone = userService.GetUserByID(Convert.ToInt32(checkPhone.OwnerID));
+                txtEndtime.Text = checkPhone.End_Time.ToString();
                 txtDriverPhone.Text = userPhone.Phone;
                 // 显示头像，如果没有头像则显示默认头像
                 if (!string.IsNullOrEmpty(user.photo))

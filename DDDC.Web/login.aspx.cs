@@ -24,7 +24,7 @@ public partial class login : System.Web.UI.Page
             }
             int userid = Convert.ToInt32(Session["UserID"]);
             var user =UserSrv.GetUserByID(userid);
-            var getship = DriverSrv.GetShipByID(userid);
+            var getship = DriverSrv.GetShipsByOwnerID2(userid);
             if (Session["UserID"] == null)
             {
                 Session.Clear();
@@ -38,7 +38,7 @@ public partial class login : System.Web.UI.Page
                         DriverSrv.UpdateShipStatusByUserID(userid, "ban");
                         ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('您已退出登录');", true);
                     }
-                    if(getship.ship_status !="ban")
+                    else if(getship.ship_status !="ban")
                         DriverSrv.UpdateShipStatusByUserID(userid, "Offline");
                         ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('您已退出登录');", true);
                         

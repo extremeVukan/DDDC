@@ -47,7 +47,7 @@
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder2" Runat="Server">
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="ContentPlaceHolder3" Runat="Server">
-    <table style="width: 80%; height: 396px;margin-left:100px">
+    <table class="112" style="width: 80%; height: 396px;margin-left:100px">
         <tr>
             <td colspan="2" style="height: 61px;">
                 <div style="margin-left:-100px">
@@ -88,7 +88,7 @@
             </td>
         </tr>
     </table>
-
+    
     <script type="text/javascript">
         // 使用百度地图 Geolocation API 获取用户的当前位置
         function getLocation() {
@@ -126,6 +126,11 @@
             });
         }
     </script>
+    <style>
+        .112{
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+    </style>
 </asp:Content>
 
 
@@ -169,7 +174,7 @@
                 </tr>
                 <tr>
                     <td style="text-align: right;">
-                        <asp:Label ID="LabelCounty" runat="server" Text="县/区：" Font-Bold="True" Font-Names="微软雅黑" ForeColor="Black"></asp:Label>
+                        <asp:Label ID="LabelCounty" runat="server" Text="区县：" Font-Bold="True" Font-Names="微软雅黑" ForeColor="Black"></asp:Label>
                     </td>
                     <td>
                         <asp:TextBox ID="txtcounty" runat="server" CssClass="location-input"></asp:TextBox>
@@ -203,8 +208,10 @@
 
         /* 船只信息样式 */
         .ship-details {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 50px;
             text-align: center;
-            margin-bottom: 10px;
+            margin-bottom: 1px;
         }
 
         .ship-image {
@@ -236,9 +243,12 @@
 
         /* 位置信息输入框样式 */
         .location-details {
-            margin-top: 10px;
+            margin-top: 5px;
             text-align: center;
             width: 90%;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 50px;
+            
         }
 
         .location-input {
@@ -293,7 +303,7 @@
                     <p>人员荷载: <%# Eval("Capacity") %></p>
                     
                     <!-- 选择按钮 -->
-                    <asp:Button ID="btnSelectShip" runat="server" Text="选择船只" CssClass="btn-select"
+                    <asp:Button ID="btnSelectShip" runat="server" Text="查看" CssClass="btn-select"
                                 CommandName="SelectShip"
                                 CommandArgument='<%# Eval("ShipName") + "|" + Eval("ShipID") + "|" + Eval("Capacity") + "|" + Eval("Picture") %>' />
                 </div>
@@ -316,6 +326,7 @@
     overflow-y: auto; /* 允许垂直滚动 */
     border-radius: 50px;
     background-color: #f9f9f9;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
     /* 每个物资项的样式 */

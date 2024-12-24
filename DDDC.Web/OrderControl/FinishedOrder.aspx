@@ -59,202 +59,132 @@
         </asp:TemplateField>
     </Columns>
 </asp:GridView>
-
+            </div>
+        </div>
 <asp:LinqDataSource runat="server" 
                     EntityTypeName="" 
                     ID="LinqDataSource2"
                     ContextTypeName="DDDC.DAL.DataClasses1DataContext"
                     TableName="OrderForm" 
-                    Where="OwnerID == @OwnerID && Status == @Status" 
+                    Where="OwnerID == @OwnerID && (Status == @Status || Status == @Status1)" 
                     Select="new (OrderNumber, ClientID, ShipName, OwnerName, PrePosition, Destination, Notes, Start_Time, End_Time, img, Status, ShipID, OrderID)" 
                     OrderBy="OrderID descending">
     <WhereParameters>
         <asp:SessionParameter SessionField="UserID" Name="OwnerID" Type="Int32"></asp:SessionParameter>
         <asp:Parameter DefaultValue="已完成" Name="Status" Type="String"></asp:Parameter>
+        <asp:Parameter DefaultValue="已取消" Name="Status1" Type="String"></asp:Parameter>
     </WhereParameters>
 </asp:LinqDataSource>
-
-        </div>
-        <div class="income-info">
-                <h2 class="income-title">收入信息</h2>
-                <div class="income-card">
-                    <p>今日收入：</p>
-                    <span><asp:Label ID="lblTodayIncome" runat="server" Text="¥0.00"></asp:Label></span>
-                </div>
-                <div class="income-card">
-                    <p>昨日收入：</p>
-                    <span><asp:Label ID="lblYesterdayIncome" runat="server" Text="¥0.00"></asp:Label></span>
-                </div>
-                <div class="income-card">
-                    <p>本月收入：</p>
-                    <span><asp:Label ID="lblMonthIncome" runat="server" Text="¥0.00"></asp:Label></span>
-                </div>
-                <div class="income-card">
-                    <p>总收入：</p>
-                    <span><asp:Label ID="lblTotalIncome" runat="server" Text="¥0.00"></asp:Label></span>
-                </div>
-            </div>
-    </div>
-
     <asp:LinqDataSource runat="server" EntityTypeName="" ID="LinqDataSource1"
         ContextTypeName="DDDC.DAL.DataClasses1DataContext"
-        TableName="OrderForm" Where="OwnerID == @OwnerID && Status == @Status" Select="new (OrderNumber, ClientID, ShipName, OwnerName, PrePosition, Destination, Notes, Start_Time, End_Time, img, Status, ShipID, OrderID)" OrderBy="OrderID descending">
+        TableName="OrderForm" Where="OwnerID == @OwnerID && Status == @Status || Status == @Status1" Select="new (OrderNumber, ClientID, ShipName, OwnerName, PrePosition, Destination, Notes, Start_Time, End_Time, img, Status, ShipID, OrderID)" OrderBy="OrderID descending">
         <whereparameters>
             <asp:SessionParameter SessionField="UserID" Name="OwnerID" Type="Int32"></asp:SessionParameter>
             <asp:Parameter DefaultValue="已完成" Name="Status" Type="String"></asp:Parameter>
+            <asp:Parameter DefaultValue="已退款" Name="Status1" Type="String"></asp:Parameter>
         </WhereParameters>
     </asp:LinqDataSource>
 
     
     <style>
-        /* 页面内容容器 */
+    /* 页面内容容器 */
+    .content-wrapper {
+        max-width: 1600px;
+        margin-top:30px;
+        margin-left:240px;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    /* 页面标题 */
+    .page-title {
+        font-size: 32px;
+        color: #34495e;
+        margin-bottom: 10px;
+    }
+
+    /* 页面描述 */
+    .page-description {
+        font-size: 18px;
+        color: #7f8c8d;
+        margin-bottom: 20px;
+    }
+
+    /* GridView 样式 */
+    .styled-grid {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+
+    .styled-grid th,
+    .styled-grid td {
+        padding: 15px;
+        text-align: center;
+        border: 1px solid #ddd;
+    }
+
+    .styled-grid th {
+        background-color: #f1f1f1;
+        font-weight: bold;
+        color: #34495e;
+    }
+
+    .styled-grid tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+
+    .styled-grid tr:hover {
+        background-color: #e9e9e9;
+        cursor: pointer;
+    }
+
+    .styled-grid img {
+        max-width: 80px;
+        height: auto;
+        border-radius: 5px;
+    }
+
+    /* 接受订单按钮样式 */
+    .accept-btn {
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .accept-btn:hover {
+        background-color: #45a049;
+    }
+
+    /* 响应式设计 */
+    @media screen and (max-width: 768px) {
         .content-wrapper {
-            max-width: 1600px;
-            margin-top:100px;
-            margin-left:0px;
-            padding: 20px;
-            background-color: #fff;
-            border-radius: 10px;
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 15px;
         }
 
-        /* 页面标题 */
         .page-title {
-            font-size: 32px;
-            color: #34495e;
-            margin-bottom: 10px;
-        }
-
-        /* 页面描述 */
-        .page-description {
-            font-size: 18px;
-            color: #7f8c8d;
-            margin-bottom: 20px;
-        }
-
-        /* GridView 样式 */
-        .styled-grid {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
+            font-size: 28px;
         }
 
         .styled-grid th,
         .styled-grid td {
-            padding: 15px;
-            text-align: center;
-            border: 1px solid #ddd;
-        }
-
-        .styled-grid th {
-            background-color: #f1f1f1;
-            font-weight: bold;
-            color: #34495e;
-        }
-
-        .styled-grid tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-
-        .styled-grid tr:hover {
-            background-color: #e9e9e9;
-            cursor: pointer;
+            padding: 10px;
+            font-size: 14px;
         }
 
         .styled-grid img {
-            max-width: 80px;
-            height: auto;
-            border-radius: 5px;
+            max-width: 60px;
         }
 
-        /* 接受订单按钮样式 */
         .accept-btn {
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
+            padding: 8px 16px;
         }
-
-        .accept-btn:hover {
-            background-color: #45a049;
-        }
-        .content-layout {
-            display: flex;
-            justify-content: space-between;
-        }
-
-        /* 订单表样式 */
-        
-
-        /* 收入信息区域 */
-        .income-info {
-            width: 15%;
-            background-color: #f9f9f9;
-            border-radius: 10px;
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-            text-align: center;
-            position:absolute;
-            margin-left :1180px;    
-            margin-top:-475px;
-        }
-
-        .income-title {
-            font-size: 20px;
-            color: #34495e;
-            margin-bottom: 20px;
-        }
-
-        .income-card {
-            background-color: #ffffff;
-            margin: 10px 0;
-            padding: 15px;
-            border-radius: 10px;
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .income-card p {
-            font-size: 16px;
-            color: #34495e;
-            margin: 0;
-        }
-
-        .income-card span {
-            font-size: 18px;
-            font-weight: bold;
-            color: #1abc9c;
-        }
-    
-        /* 响应式设计 */
-        @media screen and (max-width: 768px) {
-            .content-wrapper {
-                padding: 15px;
-            }
-
-            .page-title {
-                font-size: 28px;
-            }
-
-            .styled-grid th,
-            .styled-grid td {
-                padding: 10px;
-                font-size: 14px;
-            }
-
-            .styled-grid img {
-                max-width: 60px;
-            }
-
-            .accept-btn {
-                padding: 8px 16px;
-            }
-        }
-
-    </style>
+    }
+</style>
 </asp:Content>
