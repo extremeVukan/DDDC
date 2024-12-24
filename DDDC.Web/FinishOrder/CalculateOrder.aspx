@@ -1,18 +1,17 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/FinishOrder/CalculateMasterPage2.master" AutoEventWireup="true" CodeFile="CalculateOrder.aspx.cs" Inherits="FinishOrder_CalculateOrder" %>
+﻿<%@ Page Title="订单评分" Language="C#" MasterPageFile="~/FinishOrder/CalculateMasterPage2.master" AutoEventWireup="true" CodeFile="CalculateOrder.aspx.cs" Inherits="FinishOrder_CalculateOrder" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
-             <br />
-<asp:Image ID="Image2" runat="server" Height="96px" Width="136px" style="border-radius: 15px; border: 2px solid #ccc;" />
-<br />
-
-<h2 class="username" style="margin-top:10px;">
-    <asp:Label ID="lblName" runat="server" Text="Label"></asp:Label>
-</h2>
-<p class="email">
-    <asp:Label ID="lblemail" runat="server" Text="Label"></asp:Label>
-</p>
-
+    <br />
+    <asp:Image ID="Image2" runat="server" Height="96px" Width="136px" style="border-radius: 15px; border: 2px solid #ccc;" />
+    <br />
+    <h2 class="username" style="margin-top:10px;">
+        <asp:Label ID="lblName" runat="server" Text="Label"></asp:Label>
+    </h2>
+    <p class="email">
+        <asp:Label ID="lblemail" runat="server" Text="Label"></asp:Label>
+    </p>
 </asp:Content>
+
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder2" Runat="Server">
     <div class="checkout-wrapper">
         <div class="checkout-container">
@@ -49,6 +48,20 @@
                         <span class="price"><asp:Label ID="lblCost" runat="server" Text="¥300"></asp:Label></span>
                     </div>
                 </div>
+
+                <!-- 订单评分 -->
+                <div class="order-rating">
+                    <label style="font-weight:bold;color: #666;">评分</label>
+                    <div class="rating-wrapper" style="margin-top:30px">
+                        <button type="button" class="star-btn" data-value="1"></button>
+                        <button type="button" class="star-btn" data-value="2"></button>
+                        <button type="button" class="star-btn" data-value="3"></button>
+                        <button type="button" class="star-btn" data-value="4"></button>
+                        <button type="button" class="star-btn" data-value="5"></button>
+                    </div>
+                    <asp:HiddenField ID="hfRating" runat="server" />
+                    <p class="rating-value">当前评分: <span id="ratingValue">0</span> 分</p>
+                </div>
             </div>
 
             <!-- 船只照片和评论 -->
@@ -63,12 +76,14 @@
                     <asp:TextBox ID="txtComment" runat="server" CssClass="comment-box" TextMode="MultiLine" Rows="4"
                                  Placeholder="请留下您对本次服务的评价..."></asp:TextBox>
                     <asp:Button ID="btnSubmitComment" runat="server" Text="提交评价" CssClass="comment-button" OnClick="btnSubmitComment_Click" />
+                    <asp:Button ID="btnEva" runat="server" Text="提交评分" CssClass="comment-button" OnClick="btnEva_Click" />
+                    
                 </div>
             </div>
 
             <!-- 支付按钮 -->
             <div class="payment-section">
-                <asp:Button ID="btnPay" runat="server" Text="去付款" CssClass="pay-button" OnClientClick="showModal(); return false;"  />
+                <asp:Button ID="btnPay" runat="server" Text="去付款" CssClass="pay-button" OnClientClick="showModal(); return false;" />
             </div>
         </div>
 
@@ -82,7 +97,7 @@
                 </div>
                 <div class="modal-buttons">
                     <button onclick="closeModal()" class="return-button">返回</button>
-                    <asp:Button ID="btnConfirmPayment" runat="server" Text="去付款" CssClass="confirm-button" OnClick="btnConfirmPayment_Click"  />
+                    <asp:Button ID="btnConfirmPayment" runat="server" Text="去付款" CssClass="confirm-button" OnClick="btnConfirmPayment_Click" />
                 </div>
             </div>
         </div>
@@ -202,7 +217,7 @@
             text-align: center;
             margin-top: 20px;
         }
-
+        
         .pay-button {
             background-color: #1abc9c;
             color: white;
@@ -304,6 +319,36 @@
     .close:hover {
         color: #333;
     }
+    .rating-wrapper {
+            display: flex;
+            gap: 5px;
+            justify-content: center;
+            margin-top: 10px;
+        }
+
+    .star-btn {
+        width: 40px;
+        height: 40px;
+        background-image:url("~/UserImg/星星.png");
+        background-size: contain;
+        border: none;
+        cursor: pointer;
+        filter: grayscale(100%);
+        transition: filter 0.3s ease;
+    }
+
+    .star-btn:hover,
+    .star-btn.active {
+        filter: none;
+        background-color: #f1c40f;
+    }
+
+    .rating-value {
+        text-align: center;
+        margin-top: 10px;
+        font-size: 16px;
+        color: #333;
+    }
     </style>
 
     <script>
@@ -325,6 +370,45 @@
             const qrCodeImg = document.getElementById("qrCode");
             const randomData = Math.random().toString(36).substring(2, 10);
             qrCodeImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${randomData}`;
+        }
+        document.addEventListener("DOMContentLoaded", function () {
+            const stars = document.querySelectorAll(".star-btn");
+            const ratingValue = document.getElementById("ratingValue");
+            const hiddenRating = document.getElementById("<%= hfRating.ClientID %>");
+
+            stars.forEach((star) => {
+                star.addEventListener("click", function () {
+                    const value = this.getAttribute("data-value");
+                    hiddenRating.value = value; // 保存评分到隐藏字段
+                    ratingValue.innerText = value;
+                    updateStarColors(value);
+                });
+            });
+
+            function updateStarColors(value) {
+                stars.forEach((star) => {
+                    if (parseInt(star.getAttribute("data-value")) <= parseInt(value)) {
+                        star.classList.add("active");
+                    } else {
+                        star.classList.remove("active");
+                    }
+                });
+            }
+        });
+        function updateRatingDisplay(rating) {
+            // 更新评分显示
+            document.getElementById("ratingValue").textContent = rating;
+
+            // 更新星星样式
+            const stars = document.querySelectorAll(".star-btn");
+            stars.forEach((star) => {
+                const value = parseInt(star.getAttribute("data-value"));
+                if (value <= rating) {
+                    star.classList.add("active");
+                } else {
+                    star.classList.remove("active");
+                }
+            });
         }
     </script>
 </asp:Content>

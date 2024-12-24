@@ -180,6 +180,25 @@ namespace DDDC.BLL
                 throw new Exception("订单未找到");
             }
         }
+        public void UpdateOrderStatus1(string ordnum,string status)
+        {
+            // 查找指定订单的记录
+            var order = db.OrderForm.SingleOrDefault(o => o.OrderNumber == ordnum);
+
+            if (order != null)
+            {
+                // 更新订单状态
+                order.Status = status;
+                
+                // 提交更改到数据库
+                db.SubmitChanges();
+            }
+            else
+            {
+                // 如果找不到订单，你可以抛出一个异常或者进行错误处理
+                throw new Exception("订单未找到");
+            }
+        }
         public bool IsUnfinishOrderExist(int userID)
         {
 

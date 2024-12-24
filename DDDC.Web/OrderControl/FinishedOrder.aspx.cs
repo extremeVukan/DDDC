@@ -36,10 +36,7 @@ public partial class OrderControl_FinishedOrder : System.Web.UI.Page
                 lblName.Text = user.user_name;
                 lblShipName.Text = ship1.ship_name;
                 lblShipStatus.Text = ship1.ship_status;
-                lblTodayIncome.Text = orderTServices.GetTodayIncome(shipid).ToString();
-                lblYesterdayIncome.Text =orderTServices.GetYesterdayIncome(shipid).ToString();
-                lblMonthIncome.Text = orderTServices.GetMonthlyIncome(shipid).ToString();
-                lblTotalIncome.Text =orderTServices.GetTotalIncome(shipid).ToString();
+                
                 // 显示头像，如果没有头像则显示默认头像
 
                 // 显示头像，如果没有头像则显示默认头像

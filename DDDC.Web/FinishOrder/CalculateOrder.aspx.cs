@@ -15,8 +15,15 @@ public partial class FinishOrder_CalculateOrder : System.Web.UI.Page
     MessageServices MsgStrv = new MessageServices();
     protected void Page_Load(object sender, EventArgs e)
     {
+        var ordt = ordert.GetorderTByOrdN(Session["EON"].ToString());
+        var comm = orderService.GetOrderByOrdrNumber(Session["EON"].ToString());
+        ScriptManager.RegisterStartupScript(this, this.GetType(), "initializeRating",
+                $"setTimeout(function() {{ updateRatingDisplay({ordt.estimate}); }}, 100);", true);
+        
+        txtComment.Text = comm.Comment;
         if (!IsPostBack)
         {
+            
             // 从Session中获取用户ID
             int userID = Convert.ToInt32(Session["UserID"]);
 
@@ -34,13 +41,19 @@ public partial class FinishOrder_CalculateOrder : System.Web.UI.Page
                 lblDestination.Text = Session["EDE"].ToString();
                 imgShipPhoto.ImageUrl = Session["EImg"].ToString();
                 lblShipName.Text = Session["EShipName"].ToString();
-                txtComment.Text = Session["comment"].ToString();
+                
+                
+
+                
+
                 if (txtComment.Text == "无")
                 {
                     txtComment.Text = "";
                 }
+
                 CalculateAndDisplayCost();
-                // 显示头像，如果没有头像则显示默认头像
+
+                // 显示头像
                 if (!string.IsNullOrEmpty(user.photo))
                 {
                     Image2.ImageUrl = user.photo;
@@ -49,16 +62,19 @@ public partial class FinishOrder_CalculateOrder : System.Web.UI.Page
                 {
                     Image2.ImageUrl = "~/UserImg/暂无图片.gif";
                 }
+
+                // 注入脚本，设置前端评分显示
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "initializeRating",
+                    $"setTimeout(function() {{ updateRatingDisplay({ordt.estimate}); }}, 100);", true);
             }
             else
             {
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "alert",
-            "alert('请登录！'); setTimeout(function(){ window.location.href = 'http://localhost:51058/login.aspx'; }, 100);", true);
+                    "alert('请登录！'); setTimeout(function(){ window.location.href = 'http://localhost:51058/login.aspx'; }, 100);", true);
             }
-
-
         }
     }
+
 
 
 
@@ -123,20 +139,48 @@ public partial class FinishOrder_CalculateOrder : System.Web.UI.Page
     protected void btnSubmitComment_Click(object sender, EventArgs e)
     {
         var ord = orderService.GetOrderByOrdrNumber(lblOrderNumber.Text);
-
-        if (ord.Comment != "无" || ord.Comment =="" ||ord.Comment==null) {
-            
-            
-            ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('请勿重复评论！');", true);
-
-        }
-        else {
-            string Comment = txtComment.Text;
+        string Comment = txtComment.Text;
+        string eva = hfRating.Value.ToString();
+        if (eva=="")
+        {
+            ordert.SubmitEst(lblOrderNumber.Text,"3");
             orderService.AddCommentToOrder(lblOrderNumber.Text, Comment);
-            ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('评论成功！');", true);
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "alert",
+            "alert('评论成功！'); setTimeout(function(){ window.location.href = 'http://localhost:51058/FinishOrder/CalculateOrder.aspx'; }, 100);", true);
+
         }
+        else
+        {
+            ordert.SubmitEst(lblOrderNumber.Text, eva);
+            orderService.AddCommentToOrder(lblOrderNumber.Text, Comment);
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "alert",
+            "alert('评论成功！'); setTimeout(function(){ window.location.href = 'http://localhost:51058/FinishOrder/CalculateOrder.aspx'; }, 100);", true);
+
+        }
+        
     }
-    protected void btnConfirmPayment_Click(object sender, EventArgs e)
+    protected void btnEva_Click(object sender, EventArgs e)
+    {
+        var ord = orderService.GetOrderByOrdrNumber(lblOrderNumber.Text);
+        string Comment = txtComment.Text;
+        string eva = hfRating.Value.ToString();
+        if (eva == "")
+        {
+      
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('您未输入评分！');", true);
+        }
+        else
+        {
+            ordert.SubmitEst(lblOrderNumber.Text, eva);
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "alert",
+            "alert('评分成功！'); setTimeout(function(){ window.location.href = 'http://localhost:51058/FinishOrder/CalculateOrder.aspx'; }, 100);", true);
+
+        }
+        
+
+        
+    }
+        protected void btnConfirmPayment_Click(object sender, EventArgs e)
     {
         // 支付成功的后端逻辑，例如记录支付状态
         string orderNumber = Session["EON"]?.ToString(); // 示例：获取订单号

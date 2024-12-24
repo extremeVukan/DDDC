@@ -1,4 +1,5 @@
 ﻿using DDDC.BLL;
+using DDDC.DAL;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,11 +12,16 @@ public partial class FinishOrder_EndOrder : System.Web.UI.Page
     Userservice userService = new Userservice();
     OrderServices orderService = new OrderServices();
     DriveService driveService = new DriveService();
+    OrderTServices ordert = new OrderTServices();
     protected void Page_Load(object sender, EventArgs e)
     {
         if (!IsPostBack)
         {
             // 从Session中获取用户ID
+            var ordt = ordert.GetorderTByOrdN(Session["EON123"].ToString());
+
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "initializeRating",
+                    $"setTimeout(function() {{ updateRatingDisplay({ordt.estimate}); }}, 100);", true);
             int userID = Convert.ToInt32(Session["UserID"]);
 
             // 获取用户信息

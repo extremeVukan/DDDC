@@ -49,6 +49,18 @@
                         <span class="price"><asp:Label ID="lblCost" runat="server" Text="¥300"></asp:Label></span>
                     </div>
                 </div>
+                 <div class="order-rating">
+                 <label style="font-weight:bold;color: #666;">评分</label>
+                 <div class="rating-wrapper" style="margin-top:30px">
+                     <button type="button" class="star-btn" data-value="1"></button>
+                     <button type="button" class="star-btn" data-value="2"></button>
+                     <button type="button" class="star-btn" data-value="3"></button>
+                     <button type="button" class="star-btn" data-value="4"></button>
+                     <button type="button" class="star-btn" data-value="5"></button>
+                 </div>
+                 <asp:HiddenField ID="hfRating" runat="server" />
+                 <p class="rating-value">当前评分: <span id="ratingValue">0</span> 分</p>
+             </div>
             </div>
 
             <!-- 船只照片和评论 -->
@@ -199,9 +211,55 @@
             font-size: 20px;
             cursor: pointer;
         }
+         .rating-wrapper {
+         display: flex;
+         gap: 5px;
+         justify-content: center;
+         margin-top: 10px;
+     }
 
+ .star-btn {
+     width: 40px;
+     height: 40px;
+     background-image:url("~/UserImg/星星.png");
+     background-size: contain;
+     border: none;
+     cursor: pointer;
+     filter: grayscale(100%);
+     transition: filter 0.3s ease;
+ }
+
+ .star-btn:hover,
+ .star-btn.active {
+     filter: none;
+     background-color: #f1c40f;
+ }
+
+ .rating-value {
+     text-align: center;
+     margin-top: 10px;
+     font-size: 16px;
+     color: #333;
+ }
         
 
         
     </style>
+    <script>
+        function updateRatingDisplay(rating) {
+        // 更新评分显示
+        document.getElementById("ratingValue").textContent = rating;
+
+        // 更新星星样式
+        const stars = document.querySelectorAll(".star-btn");
+        stars.forEach((star) => {
+            const value = parseInt(star.getAttribute("data-value"));
+            if (value <= rating) {
+                star.classList.add("active");
+            } else {
+                star.classList.remove("active");
+            }
+        });
+    }
+</script>
     </asp:Content>

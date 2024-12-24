@@ -32,7 +32,7 @@
                             <div><%# Eval("email") %></div>
                             <div><%# Eval("phone") %></div>
                             <div><%# Eval("status") %></div>
-                            <div class="status-label <%# Eval("userstatu") == "Normal" ? "status-available" : "status-banned" %>">
+                            <div class="status-label <%# Eval("userstatu").ToString() == "Normal" ? "status-available" : "status-banned" %>">
                                 <%# Eval("userstatu") %>
                             </div>
                             <div class="action-buttons">

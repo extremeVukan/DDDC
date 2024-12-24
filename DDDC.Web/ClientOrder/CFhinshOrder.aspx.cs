@@ -11,7 +11,7 @@ public partial class ClientOrder_CFhinshOrder : System.Web.UI.Page
 {
     Userservice userService = new Userservice();
     OrderServices orderService = new OrderServices();
-
+    AfterServices  afterServices = new AfterServices();
     DriveService driveService = new DriveService();
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -84,4 +84,43 @@ public partial class ClientOrder_CFhinshOrder : System.Web.UI.Page
         // 重新绑定数据源
         ctl02.DataBind();
     }
-}
+
+    protected void btnRefund_Click(object sender, EventArgs e)
+    {
+        Button btn = (Button)sender;
+        int orderId = Convert.ToInt32(btn.CommandArgument);
+
+        // 数据上下文
+
+        // 查询订单信息
+        var order = orderService.GetOrderByorder_ID(orderId);
+
+        
+        if (order == null)
+            {
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('订单不存在！');", true);
+                return;
+            }
+
+            // 判断是否超过三天
+            if (order.End_Time.HasValue && (DateTime.Now - order.End_Time.Value).TotalDays > 3)
+            {
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('订单已超过三天，不可退款！');", true);
+                return;
+            }
+
+            // 判断订单是否已经退款
+            if (order.Status == "已退款")
+            {
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('订单已退款，不可重复申请！');", true);
+                return;
+            }
+
+            // 将订单号保存到 Session 中
+            Session["RefundOrderNumber"] = order.OrderNumber;
+
+            // 跳转到退款申请页面（可根据需求修改 URL）
+            Response.Redirect("http://localhost:51058/ClientOrder/AfterSales.aspx");
+        }
+    }
+

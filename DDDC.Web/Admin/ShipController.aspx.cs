@@ -27,7 +27,7 @@ public partial class Admin_ShipController : System.Web.UI.Page
         
         if (!string.IsNullOrEmpty(searchQuery))
         {
-            ships = ships.Where(s => s.ShipName.Contains(searchQuery) || s.ShipID.ToString().Contains(searchQuery)).ToList()  ;
+            ships = ships.Where(s => s.ship_status.Contains(searchQuery) || s.ShipID.ToString().Contains(searchQuery)|| s.ShipID.ToString().Contains(searchQuery)).ToList()  ;
         }
 
         RepeaterShips.DataSource = ships;
