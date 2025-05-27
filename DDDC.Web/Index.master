@@ -114,7 +114,7 @@
         	margin-left: 22%;
         	background-color: rgba(0, 0, 0, 0.5); /* 背景透明度设置为0.5 */
             color: white; /* 内容颜色 */
-           border-radius: 100px;
+           border-radius: 25px;
            float: left;
            position: relative;
            margin-top:20px;
