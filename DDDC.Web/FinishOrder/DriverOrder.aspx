@@ -35,7 +35,8 @@
             <label for="destination">目的地:</label>
             <asp:TextBox ID="txtDestination" runat="server" ReadOnly="True"></asp:TextBox>
         </div>
-
+        <asp:Button ID="btnArriveToCustomer" runat="server" Text="到达客户位置" CssClass="complete-button" OnClick="btnArriveToCustomer_Click" />
+<asp:Button ID="btnCompleteOrder" runat="server" Text="完成订单" CssClass="complete-button" OnClick="btnCompleteOrder_Click"/>
         <div class="progress-container">
             <label>订单进度:</label>
             <div class="progress-bar">
@@ -43,8 +44,8 @@
             </div>
             <div class="progress-status">状态: 下单成功</div>
         </div>
-
-        <asp:Button ID="btnCompleteOrder" runat="server" Text="完成订单" CssClass="complete-button" OnClick="btnCompleteOrder_Click"/>
+        <!-- 添加"到达客户位置"按钮 -->
+        
     </div>
 </div>
 </asp:Content>

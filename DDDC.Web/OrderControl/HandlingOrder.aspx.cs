@@ -65,19 +65,15 @@ public partial class OrderControl_HandlingOrder : System.Web.UI.Page
         string ShipL = ship.province + ship.city + ship.Position;
         if (orderService.IsUnfinishOrderExist(userID))
         {
-            
-            
-                ScriptManager.RegisterStartupScript(this, this.GetType(), "alert",
-        "alert('您还有订单尚未完成！'); setTimeout(function(){ window.location.href = 'http://localhost:51058/OrderControl/ProducingOrder.aspx'; }, 100);", true);
-
-
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "alert",
+            "alert('您还有订单尚未完成！'); setTimeout(function(){ window.location.href = 'http://localhost:51058/OrderControl/ProducingOrder.aspx'; }, 100);", true);
         }
-        else {
-
+        else
+        {
             if (ship.ship_status == "Occupied" || ship.ship_status == "Offline")
             {
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "alert",
-        "alert('您的船只状态异常！'); setTimeout(function(){ window.location.href = 'http://localhost:51058/SelifInfo_Web/Ships_info.aspx'; }, 100);", true);
+                "alert('您的船只状态异常！'); setTimeout(function(){ window.location.href = 'http://localhost:51058/SelifInfo_Web/Ships_info.aspx'; }, 100);", true);
             }
             else
             {
@@ -85,80 +81,51 @@ public partial class OrderControl_HandlingOrder : System.Web.UI.Page
                 Button btn = (Button)sender;
                 int orderId = Convert.ToInt32(btn.CommandArgument);  // 从CommandArgument获取OrderID
                 var ord = orderService.GetOrderByorder_ID(orderId);
-                // 创建 OrderServices 实例
+                var owe = driveService.GetShipsByOwnerID2(userID);
 
                 try
                 {
                     // 调用 AcceptOrder 方法来更新订单状态
                     orderService.AcceptOrder(orderId);
-                    orderTServices.AddOrderInfo(ord.OrderID, ord.OrderNumber, Convert.ToInt32(ord.ClientID), Convert.ToInt32(ord.ShipID), "确认", ord.PrePosition, ord.Destination, ShipL, ord.Start_Time ?? DateTime.MinValue, ord.End_Time ?? DateTime.MinValue, 0, "未支付");
+                    orderTServices.AddOrderInfo(ord.OrderID, ord.OrderNumber, Convert.ToInt32(ord.ClientID), Convert.ToInt32(owe.ship_id), "确认", ord.PrePosition, ord.Destination, ShipL, ord.Start_Time ?? DateTime.MinValue, ord.End_Time ?? DateTime.MinValue, 0, "未支付");
 
-                    
+                    // 更新订单信息，绑定船只和船主信息
+                    orderService.UpdateOrder(
+                        orderId,                         // 订单ID
+                        ship.ship_name,                  // 船只名称
+                        ship.ship_id,                    // 船只ID
+                        userID,                          // 船主ID
+                        Session["Username"].ToString(),  // 船主名称
+                        ShipL,                           // 船只位置
+                        ship.Picture                     // 船只图片
+                    );
+
                     int cID = Convert.ToInt32(ord.ClientID);
                     string HeadText = "亲爱的用户，您的订单" + ord.OrderNumber + "已接单，请注意查看！";
                     string Msg = "亲爱的用户您由" + ord.PrePosition + "开往" + ord.Destination + "的订单已由司机确认,请确认订单信息无误后到达预定位置！";
                     MsgStrv.addMsg(HeadText, cID, userID, Msg, "订单", DateTime.Now, "未读");
 
-
-
                     // 提示用户操作成功
                     ScriptManager.RegisterStartupScript(this, this.GetType(), "alert",
-                "alert('订单已成功接受并确认！'); setTimeout(function(){ window.location.href = 'http://localhost:51058/OrderControl/ProducingOrder.aspx'; }, 100);", true);
+                    "alert('订单已成功接受并确认！'); setTimeout(function(){ window.location.href = 'http://localhost:51058/OrderControl/ProducingOrder.aspx'; }, 100);", true);
 
                     driveService.UpdateShipStatusByUserID(userID, "Occupied");
-
-
-
                 }
                 catch (Exception ex)
                 {
                     // 如果发生异常，显示错误信息
-
                     ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('操作失败:！'+ ex.Message);", true);
                 }
 
                 // 重新绑定 GridView 数据，确保显示的数据更新
                 ctl02.DataBind();
-
             }
         }
-        
-       
-
     }
+    
 
 
-    protected void btnrejectOrder_Click(object sender, EventArgs e)
-    {
-        Button btn = (Button)sender;
-        int orderId = Convert.ToInt32(btn.CommandArgument);  // 从CommandArgument获取OrderID
-        var ord = orderService.GetOrderByorder_ID(orderId);
-        // 创建 OrderServices 实例
-        int userID = Convert.ToInt32(Session["UseriD"]);
-        try
-        {
-            // 调用 AcceptOrder 方法来更新订单状态
-            orderService.RejectOrder(orderId);
-
-            // 提示用户操作成功
-            ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('订单已取消！');", true);
-            int cID = Convert.ToInt32(ord.ClientID);
-            string HeadText = "亲爱的用户，您的订单" + ord.OrderNumber + "已被取消，请注意查看！";
-            string Msg = "亲爱的用户您由" + ord.PrePosition + "开往" + ord.Destination + "的订单已被取消,请重新下单！";
-            MsgStrv.addMsg(HeadText, cID, userID, Msg, "订单", DateTime.Now, "未读");
-
-
-        }
-        catch (Exception ex)
-        {
-            // 如果发生异常，显示错误信息
-
-            ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('操作失败:！'+ ex.Message);", true);
-        }
-
-        // 重新绑定 GridView 数据，确保显示的数据更新
-        ctl02.DataBind();
-    }
+   
 
     protected void ctl02_PageIndexChanging(object sender, GridViewPageEventArgs e)
     {

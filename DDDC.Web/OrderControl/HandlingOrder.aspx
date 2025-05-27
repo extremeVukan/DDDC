@@ -23,7 +23,8 @@
     </h2>
 </asp:Content>
 
-<asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder2" Runat="Server">
+
+    <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder2" Runat="Server">
     <div class="content-wrapper">
         <h1 class="page-title">订单管理</h1>
         <p class="page-description">查看订单详情，并根据需求接受订单。</p>
@@ -54,11 +55,7 @@
                 OnClick="btnAcceptOrder_Click" CssClass="accept-btn" />
                            
 
-            <asp:Button ID="btnrejectOrder" runat="server" Text="拒绝订单" 
-                CommandName="rejectOrder" 
-                CommandArgument='<%# Eval("OrderID") %>'
-                style="margin-top:10px"
-                OnClick="btnrejectOrder_Click"  CssClass="accept-btn" />
+            
          </ItemTemplate>
 
     </asp:TemplateField>
@@ -74,7 +71,7 @@
         ContextTypeName="DDDC.DAL.DataClasses1DataContext"
         TableName="OrderForm" Where="OwnerID == @OwnerID && Status == @Status" Select="new (OrderNumber, PrePosition, Destination, Notes, img, Status, OrderID, Start_Time)" OrderBy="OrderID descending">
         <WhereParameters>
-            <asp:SessionParameter SessionField="UserID" Name="OwnerID" Type="Int32"></asp:SessionParameter>
+            <asp:Parameter DefaultValue="0" Name="OwnerID" Type="Int32"></asp:Parameter>
             <asp:Parameter DefaultValue="待确认" Name="Status" Type="String"></asp:Parameter>
         </WhereParameters>
     </asp:LinqDataSource>

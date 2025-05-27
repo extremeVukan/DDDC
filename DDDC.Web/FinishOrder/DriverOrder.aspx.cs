@@ -72,4 +72,23 @@ public partial class FinishOrder_DriverOrder : System.Web.UI.Page
         ScriptManager.RegisterStartupScript(this, this.GetType(), "alert",
             "alert('已提醒乘客付款！'); setTimeout(function(){ window.location.href = 'http://localhost:51058/OrderControl/HandlingOrder.aspx'; }, 100);", true);
     }
+
+    protected void btnArriveToCustomer_Click(object sender, EventArgs e)
+    {
+        int userID = Convert.ToInt32(Session["UserID"]);
+        var ChekcOrderN = orderService.GetOrderByOrdrNumber(txtOrderNumber.Text);
+        int cID = Convert.ToInt32(ChekcOrderN.ClientID);
+
+        // 发送消息通知客户
+        string HeadText = "船只已到达您的位置";
+        string Msg = "司机已到达您的位置，请准备上船。您的订单：" + txtOrderNumber.Text + "，船只名称：" + txtShipName.Text;
+        MsgStrv.addMsg(HeadText, cID, userID, Msg, "订单", DateTime.Now, "未读");
+
+        // 更新订单状态为"已到达"
+        orderService.UpdateOrderStatus1(txtOrderNumber.Text, "已到达");
+
+        // 提示司机操作成功
+        ScriptManager.RegisterStartupScript(this, this.GetType(), "alert",
+            "alert('已通知乘客您已到达！');", true);
+    }
 }

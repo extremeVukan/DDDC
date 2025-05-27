@@ -214,6 +214,29 @@ namespace DDDC.BLL
                 return false;
             }
         }
+        public void UpdateOrder(int orderID1,string ShipName1,int ShipID1,int OwnerID1,string OWName,string Position,string IMG)
+        {
+            // 查找指定订单的记录
+            var order = db.OrderForm.SingleOrDefault(o => o.OrderID == orderID1);
+
+            if (order != null)
+            {
+                // 更新订单状态
+                order.ShipName = ShipName1;
+                order.ShipID = ShipID1;
+                order.OwnerID = OwnerID1;
+                order.OwnerName = OWName;
+                order.PrePosition = Position;
+                order.img = IMG;
+                // 提交更改到数据库
+                db.SubmitChanges();
+            }
+            else
+            {
+                // 如果找不到订单，你可以抛出一个异常或者进行错误处理
+                throw new Exception("订单未找到");
+            }
+        }
     }
 }
 
