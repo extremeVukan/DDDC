@@ -1,6 +1,8 @@
 ﻿<%@ Page Title="订单评分" Language="C#" MasterPageFile="~/FinishOrder/CalculateMasterPage2.master" AutoEventWireup="true" CodeFile="CalculateOrder.aspx.cs" Inherits="FinishOrder_CalculateOrder" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
+    <!-- 添加ScriptManager控件，必须放在UpdatePanel之前 -->
+   
     <br />
     <asp:Image ID="Image2" runat="server" Height="96px" Width="136px" style="border-radius: 15px; border: 2px solid #ccc;" />
     <br />
@@ -12,6 +14,7 @@
     </p>
 </asp:Content>
 
+
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder2" Runat="Server">
     <div class="checkout-wrapper">
         <div class="checkout-container">
@@ -21,31 +24,31 @@
                 <div class="order-details">
                     <div class="order-item">
                         <label>订单号</label>
-                        <span><asp:Label ID="lblOrderNumber" runat="server" Text="OD123456789"></asp:Label></span>
+                        <span><asp:Label ID="lblOrderNumber" runat="server"></asp:Label></span>
                     </div>
                     <div class="order-item">
                         <label>船只名称</label>
-                        <span><asp:Label ID="lblShipName" runat="server" Text="海洋之星"></asp:Label></span>
+                        <span><asp:Label ID="lblShipName" runat="server"></asp:Label></span>
                     </div>
                     <div class="order-item">
                         <label>司机姓名</label>
-                        <span><asp:Label ID="lblDriverName" runat="server" Text="张师傅"></asp:Label></span>
+                        <span><asp:Label ID="lblDriverName" runat="server"></asp:Label></span>
                     </div>
                     <div class="order-item">
                         <label>司机电话</label>
-                        <span><asp:Label ID="lblDriverPhone" runat="server" Text="13888888888"></asp:Label></span>
+                        <span><asp:Label ID="lblDriverPhone" runat="server"></asp:Label></span>
                     </div>
                     <div class="order-item">
                         <label>起始位置</label>
-                        <span><asp:Label ID="lblStartPosition" runat="server" Text="北京市朝阳区"></asp:Label></span>
+                        <span><asp:Label ID="lblStartPosition" runat="server"></asp:Label></span>
                     </div>
                     <div class="order-item">
                         <label>目的地</label>
-                        <span><asp:Label ID="lblDestination" runat="server" Text="北京市海淀区"></asp:Label></span>
+                        <span><asp:Label ID="lblDestination" runat="server"></asp:Label></span>
                     </div>
                     <div class="order-item">
                         <label>费用</label>
-                        <span class="price"><asp:Label ID="lblCost" runat="server" Text="¥300"></asp:Label></span>
+                        <span class="price"><asp:Label ID="lblCost" runat="server"></asp:Label></span>
                     </div>
                 </div>
 
@@ -61,6 +64,9 @@
                     </div>
                     <asp:HiddenField ID="hfRating" runat="server" />
                     <p class="rating-value">当前评分: <span id="ratingValue">0</span> 分</p>
+                    
+                    <!-- 显示评分提交状态 -->
+                    <asp:Label ID="lblRatingStatus" runat="server" CssClass="status-message" Visible="false"></asp:Label>
                 </div>
             </div>
 
@@ -71,14 +77,26 @@
                     <asp:Image ID="imgShipPhoto" runat="server" CssClass="ship-photo" AlternateText="船只照片" />
                 </div>
 
-                <div class="comment-card">
-                    <h3>订单评论</h3>
-                    <asp:TextBox ID="txtComment" runat="server" CssClass="comment-box" TextMode="MultiLine" Rows="4"
-                                 Placeholder="请留下您对本次服务的评价..."></asp:TextBox>
-                    <asp:Button ID="btnSubmitComment" runat="server" Text="提交评价" CssClass="comment-button" OnClick="btnSubmitComment_Click" />
-                    <asp:Button ID="btnEva" runat="server" Text="提交评分" CssClass="comment-button" OnClick="btnEva_Click" />
-                    
-                </div>
+                <!-- 评论区块，使用UpdatePanel实现无刷新提交 -->
+                <asp:UpdatePanel ID="UpdatePanelComment" runat="server" UpdateMode="Conditional">
+                    <ContentTemplate>
+                        <div class="comment-card">
+                            <h3>订单评论</h3>
+                            <asp:TextBox ID="txtComment" runat="server" CssClass="comment-box" TextMode="MultiLine" Rows="4"
+                                         Placeholder="请留下您对本次服务的评价..."></asp:TextBox>
+                                         
+                            <!-- 评价按钮 -->
+                            <asp:Button ID="btnSubmitReview" runat="server" Text="提交评价与评分" CssClass="comment-button" 
+                                        OnClick="btnSubmitComment_Click" />
+                            
+                            <!-- 评论提交状态信息 -->
+                            <asp:Label ID="lblCommentStatus" runat="server" CssClass="status-message" Visible="false"></asp:Label>
+                        </div>
+                    </ContentTemplate>
+                    <Triggers>
+                        <asp:AsyncPostBackTrigger ControlID="btnSubmitReview" EventName="Click" />
+                    </Triggers>
+                </asp:UpdatePanel>
             </div>
 
             <!-- 支付按钮 -->
@@ -97,7 +115,7 @@
                 </div>
                 <div class="modal-buttons">
                     <button onclick="closeModal()" class="return-button">返回</button>
-                    <asp:Button ID="btnConfirmPayment" runat="server" Text="去付款" CssClass="confirm-button" OnClick="btnConfirmPayment_Click" />
+                    <asp:Button ID="btnConfirmPayment" runat="server" Text="确认支付" CssClass="confirm-button" OnClick="btnConfirmPayment_Click" />
                 </div>
             </div>
         </div>
@@ -146,7 +164,6 @@
             justify-content: space-between;
             margin-bottom: 30px;
             font-size: 18px;
-            
         }
 
         .order-details .order-item label {
@@ -210,6 +227,11 @@
         .comment-button:hover {
             background-color: #45a049;
         }
+        
+        .comment-button:disabled {
+            background-color: #a0a0a0;
+            cursor: not-allowed;
+        }
 
         /* 支付部分 */
         .payment-section {
@@ -267,91 +289,121 @@
             margin: 20px auto;
             display: block;
         }
-
        
-         .modal-buttons {
-        display: flex;
-        justify-content: space-between;
-        gap: 15px;
-    }
+        .modal-buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+        }
 
-    .modal-buttons .return-button,
-    .modal-buttons .confirm-button {
-        flex: 1;
-        padding: 10px;
-        font-size: 16px;
-        font-weight: bold;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        transition: all 0.3s ease;
-    }
+        .modal-buttons .return-button,
+        .modal-buttons .confirm-button {
+            flex: 1;
+            padding: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
 
-    .modal-buttons .return-button {
-        background-color: #e74c3c;
-        color: white;
-    }
+        .modal-buttons .return-button {
+            background-color: #e74c3c;
+            color: white;
+        }
 
-    .modal-buttons .confirm-button {
-        background-color: #1abc9c;
-        color: white;
-    }
+        .modal-buttons .confirm-button {
+            background-color: #1abc9c;
+            color: white;
+        }
 
-    .modal-buttons .return-button:hover {
-        background-color: #c0392b;
-    }
+        .modal-buttons .return-button:hover {
+            background-color: #c0392b;
+        }
 
-    .modal-buttons .confirm-button:hover {
-        background-color: #16a085;
-    }
+        .modal-buttons .confirm-button:hover {
+            background-color: #16a085;
+        }
 
-    .close {
-        position: absolute;
-        top: 10px;
-        right: 20px;
-        font-size: 28px;
-        font-weight: bold;
-        color: #999;
-        cursor: pointer;
-        transition: color 0.3s ease;
-    }
+        .close {
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            font-size: 28px;
+            font-weight: bold;
+            color: #999;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
 
-    .close:hover {
-        color: #333;
-    }
-    .rating-wrapper {
+        .close:hover {
+            color: #333;
+        }
+        
+        .rating-wrapper {
             display: flex;
             gap: 5px;
             justify-content: center;
             margin-top: 10px;
         }
 
-    .star-btn {
-        width: 40px;
-        height: 40px;
-        background-image:url("~/UserImg/星星.png");
-        background-size: contain;
-        border: none;
-        cursor: pointer;
-        filter: grayscale(100%);
-        transition: filter 0.3s ease;
-    }
+        .star-btn {
+            width: 40px;
+            height: 40px;
+            background-image: url("/UserImg/星星.png");
+            background-size: contain;
+            border: none;
+            cursor: pointer;
+            filter: grayscale(100%);
+            transition: filter 0.3s ease;
+        }
 
-    .star-btn:hover,
-    .star-btn.active {
-        filter: none;
-        background-color: #f1c40f;
-    }
+        .star-btn:hover,
+        .star-btn.active {
+            filter: none;
+            background-color: #f1c40f;
+        }
 
-    .rating-value {
-        text-align: center;
-        margin-top: 10px;
-        font-size: 16px;
-        color: #333;
-    }
+        .rating-value {
+            text-align: center;
+            margin-top: 10px;
+            font-size: 16px;
+            color: #333;
+        }
+        
+        /* 状态消息样式 */
+        .status-message {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            font-weight: bold;
+            animation: fadeOut 3s forwards;
+            animation-delay: 3s;
+        }
+        
+        @keyframes fadeOut {
+            0% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+        
+        .status-message.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .status-message.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
     </style>
 
+    <!-- JavaScript处理逻辑 -->
     <script>
+        // 模态框相关函数
         function showModal() {
             document.getElementById("paymentModal").style.display = "block";
             generateQRCode();
@@ -361,20 +413,20 @@
             document.getElementById("paymentModal").style.display = "none";
         }
 
-        function confirmPayment() {
-            alert("支付成功！");
-            closeModal();
-        }
-
         function generateQRCode() {
             const qrCodeImg = document.getElementById("qrCode");
             const randomData = Math.random().toString(36).substring(2, 10);
             qrCodeImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${randomData}`;
         }
+
+        // 评分系统相关函数
         document.addEventListener("DOMContentLoaded", function () {
             const stars = document.querySelectorAll(".star-btn");
             const ratingValue = document.getElementById("ratingValue");
             const hiddenRating = document.getElementById("<%= hfRating.ClientID %>");
+
+            // 初始化星级
+            initializeStars();
 
             stars.forEach((star) => {
                 star.addEventListener("click", function () {
@@ -384,6 +436,14 @@
                     updateStarColors(value);
                 });
             });
+
+            function initializeStars() {
+                const initialRating = hiddenRating.value;
+                if (initialRating) {
+                    ratingValue.innerText = initialRating;
+                    updateStarColors(initialRating);
+                }
+            }
 
             function updateStarColors(value) {
                 stars.forEach((star) => {
@@ -395,22 +455,50 @@
                 });
             }
         });
+
         function updateRatingDisplay(rating) {
+            if (!rating || rating === "0") return;
+
             // 更新评分显示
             document.getElementById("ratingValue").textContent = rating;
+
+            // 更新隐藏字段
+            document.getElementById("<%= hfRating.ClientID %>").value = rating;
 
             // 更新星星样式
             const stars = document.querySelectorAll(".star-btn");
             stars.forEach((star) => {
                 const value = parseInt(star.getAttribute("data-value"));
-                if (value <= rating) {
+                if (value <= parseInt(rating)) {
                     star.classList.add("active");
                 } else {
                     star.classList.remove("active");
                 }
             });
         }
+        
+        // 处理状态消息自动隐藏
+        function hideStatusMessage(messageId) {
+            setTimeout(function() {
+                var message = document.getElementById(messageId);
+                if (message) {
+                    message.style.opacity = '0';
+                    setTimeout(function() {
+                        message.style.display = 'none';
+                    }, 1000);
+                }
+            }, 3000);
+        }
+        
+        // 提交评论后的回调函数
+        function onCommentSubmitted(successful) {
+            if (successful) {
+                const statusMsg = document.getElementById('<%= lblCommentStatus.ClientID %>');
+                if (statusMsg) {
+                    // 3秒后自动隐藏消息
+                    hideStatusMessage('<%= lblCommentStatus.ClientID %>');
+                }
+            }
+        }
     </script>
 </asp:Content>
-
-

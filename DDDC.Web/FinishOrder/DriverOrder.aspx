@@ -42,12 +42,20 @@
             <div class="progress-bar">
                 <div class="progress" style="width: 50%;"></div>
             </div>
-            <div class="progress-status">状态: 下单成功</div>
+            <div class="progress-status">状态: 进行中</div>
         </div>
         <!-- 添加"到达客户位置"按钮 -->
         
     </div>
 </div>
+    <!-- 在页面添加CSS样式，可以放在 Content1 内的最后 -->
+<style>
+    .complete-button.disabled {
+        background-color: #95a5a6;
+        cursor: not-allowed;
+        opacity: 0.7;
+    }
+</style>
 </asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder2" Runat="Server">

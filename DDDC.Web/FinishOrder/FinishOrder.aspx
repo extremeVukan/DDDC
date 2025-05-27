@@ -37,9 +37,10 @@
             <div class="progress-bar">
                 <div class="progress" style="width: 50%;"></div>
             </div>
-            <div class="progress-status">状态: 下单成功</div>
+            <div class="progress-status">状态: 进行中</div>
         </div>
-
+        <!-- 添加"确认上船"按钮 -->
+<asp:Button ID="btnConfirmBoarding" runat="server" Text="确认上船" CssClass="complete-button" OnClick="btnConfirmBoarding_Click" />
         <asp:Button ID="btnCompleteOrder" runat="server" Text="完成订单" CssClass="complete-button" OnClick="btnCompleteOrder_Click" />
     </div>
 </div>

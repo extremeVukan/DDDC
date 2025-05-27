@@ -217,6 +217,8 @@
 </head>
 <body>
     <form id="form1" runat="server">
+        <asp:ScriptManager ID="ScriptManager1" runat="server" EnablePartialRendering="true"></asp:ScriptManager>
+        
         <!-- 顶部导航栏 -->
         <header class="navbar">
         <div class="logo">

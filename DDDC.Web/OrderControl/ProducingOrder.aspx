@@ -68,18 +68,20 @@
 
     <!-- LinqDataSource with OrderBy -->
     <asp:LinqDataSource 
-        runat="server" 
-        ID="LinqDataSource1"
-        ContextTypeName="DDDC.DAL.DataClasses1DataContext"
-        TableName="OrderForm"
-        Select="new (OrderNumber, ClientID, ShipName, OwnerName, PrePosition, Destination, Notes, Start_Time, End_Time, img, Status, ShipID, OrderID)"
-        Where="OwnerID == @OwnerID && Status == @Status"
-        OrderBy="OrderID descending">
-        <WhereParameters>
-            <asp:SessionParameter SessionField="UserID" Name="OwnerID" Type="Int32" />
-            <asp:Parameter DefaultValue="确认" Name="Status" Type="String" />
-        </WhereParameters>
-    </asp:LinqDataSource>
+    runat="server" 
+    ID="LinqDataSource1"
+    ContextTypeName="DDDC.DAL.DataClasses1DataContext"
+    TableName="OrderForm"
+    Select="new (OrderNumber, ClientID, ShipName, OwnerName, PrePosition, Destination, Notes, Start_Time, End_Time, img, Status, ShipID, OrderID)"
+    Where="OwnerID == @OwnerID && (Status == @Status || Status == @Status1 || Status == @Status2)"
+    OrderBy="OrderID descending">
+    <WhereParameters>
+        <asp:SessionParameter SessionField="UserID" Name="OwnerID" Type="Int32" />
+        <asp:Parameter DefaultValue="已到达" Name="Status" Type="String"></asp:Parameter>
+        <asp:Parameter DefaultValue="确认" Name="Status1" Type="String"></asp:Parameter>
+        <asp:Parameter DefaultValue="已搭乘" Name="Status2" Type="String"></asp:Parameter>
+    </WhereParameters>
+</asp:LinqDataSource>
 
 
     
