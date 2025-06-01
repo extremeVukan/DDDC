@@ -1,14 +1,14 @@
 ﻿using DDDC.DAL;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
-using System.Runtime.Remoting.Metadata.W3cXsd2001;
 
 namespace DDDC.BLL
 {
     public class AfterServices
     {
-        DataClasses1DataContext db = new DataClasses1DataContext();
+        private DDDCModel1 db = new DDDCModel1();
 
         public OrderInfoDTO GetOrderInfo(string orderNumber)
         {
@@ -25,7 +25,6 @@ namespace DDDC.BLL
                     }).FirstOrDefault();
         }
 
-
         public bool SubmitRefundApplication(string orderNumber, int userId, int shipId, string reason)
         {
             try
@@ -41,9 +40,9 @@ namespace DDDC.BLL
                     Status = "待处理"
                 };
 
-                // 将退款申请插入数据库
-                db.AfterSales.InsertOnSubmit(refundApplication);
-                db.SubmitChanges();
+                // 将退款申请添加到数据库 - EF 版本
+                db.AfterSales.Add(refundApplication);
+                db.SaveChanges();
 
                 return true; // 插入成功
             }
@@ -57,29 +56,16 @@ namespace DDDC.BLL
 
         public bool getAppByOrdernumber(string ord)
         {
-            AfterSales af= (from c in db.AfterSales
-                    where c.ordernumber == ord
-                    select c).FirstOrDefault();
-            if (af != null)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-
+            AfterSales af = db.AfterSales.FirstOrDefault(c => c.ordernumber == ord);
+            return af != null;
         }
+
         public AfterSales getAppByServicesID(int seid)
         {
-            return (from c in db.AfterSales
-                    where c.ServicesID == seid
-                    select c).FirstOrDefault();
-            
-
+            return db.AfterSales.FirstOrDefault(c => c.ServicesID == seid);
         }
-        ///////////////////Admin
 
+        ///////////////////Admin
         public class RefundDTO
         {
             public int RefundID { get; set; }
@@ -88,28 +74,28 @@ namespace DDDC.BLL
             public string Reason { get; set; }
             public DateTime ApplicationDate { get; set; }
             public string Status { get; set; }
-            
         }
+
         public List<RefundDTO> GetRefundList()
         {
             return db.AfterSales.Select(r => new RefundDTO
             {
                 RefundID = r.ServicesID,
                 OrderNumber = r.ordernumber,
-                UserID =Convert.ToInt32( r.UserID),
+                UserID = Convert.ToInt32(r.UserID),
                 Reason = r.Reason,
-                ApplicationDate =Convert.ToDateTime( r.ApplicationDate),
+                ApplicationDate = Convert.ToDateTime(r.ApplicationDate),
                 Status = r.Status
             }).ToList();
         }
 
         public bool ApproveRefund(int refundId)
         {
-            var refund = db.AfterSales.SingleOrDefault(r => r.ServicesID == refundId);
+            var refund = db.AfterSales.FirstOrDefault(r => r.ServicesID == refundId);
             if (refund != null)
             {
                 refund.Status = "同意";
-                db.SubmitChanges();
+                db.SaveChanges();
                 return true;
             }
             return false;
@@ -117,21 +103,20 @@ namespace DDDC.BLL
 
         public bool RejectRefund(int refundId)
         {
-            var refund = db.AfterSales.SingleOrDefault(r => r.ServicesID == refundId);
+            var refund = db.AfterSales.FirstOrDefault(r => r.ServicesID == refundId);
             if (refund != null)
             {
                 refund.Status = "拒绝";
-                db.SubmitChanges();
+                db.SaveChanges();
                 return true;
             }
             return false;
         }
 
-
         public void UpdateOrderStatus(string ordnum, string status)
         {
             // 查找指定订单的记录
-            var order = db.OrderForm.SingleOrDefault(o => o.OrderNumber == ordnum);
+            var order = db.OrderForm.FirstOrDefault(o => o.OrderNumber == ordnum);
 
             if (order != null)
             {
@@ -139,41 +124,73 @@ namespace DDDC.BLL
                 order.Status = status;
 
                 // 提交更改到数据库
-                db.SubmitChanges();
+                db.SaveChanges();
             }
             else
             {
-                // 如果找不到订单，你可以抛出一个异常或者进行错误处理
+                // 如果找不到订单，抛出异常或进行错误处理
                 throw new Exception("订单未找到");
             }
         }
 
-        public void UpdateOrderTStatus1(string ordnum, string status ,decimal price)
+        public void UpdateOrderTStatus1(string ordnum, string status, decimal price)
         {
-            // 查找指定订单的记录
-            var order = db.orderT.SingleOrDefault(o => o.orderNumber == ordnum);
-
-            if (order != null)
+            using (var transaction = db.Database.BeginTransaction())
             {
-                // 更新订单状态
-                order.order_status = status;
-                order.payment_status = status;
-                order.total_price = price;
+                try
+                {
+                    // 查找指定订单的记录
+                    var order = db.orderT.FirstOrDefault(o => o.orderNumber == ordnum);
 
-                // 提交更改到数据库
-                db.SubmitChanges();
-            }
-            else
-            {
-                // 如果找不到订单，你可以抛出一个异常或者进行错误处理
-                throw new Exception("订单未找到");
+                    if (order != null)
+                    {
+                        // 更新订单状态
+                        order.order_status = status;
+                        order.payment_status = status;
+                        order.total_price = price;
+
+                        // 提交更改到数据库
+                        db.SaveChanges();
+                        transaction.Commit();
+                    }
+                    else
+                    {
+                        // 如果找不到订单，抛出异常
+                        transaction.Rollback();
+                        throw new Exception("订单未找到");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // 出现任何错误时回滚事务
+                    transaction.Rollback();
+                    throw new Exception($"更新订单状态时出错: {ex.Message}", ex);
+                }
             }
         }
 
+        // 使用 IDisposable 模式释放资源
+        private bool disposed = false;
 
+        // 保护的 Dispose 方法
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposed)
+            {
+                if (disposing)
+                {
+                    db.Dispose();
+                }
+                disposed = true;
+            }
+        }
 
-
-
+        // 公开的 Dispose 方法
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
     }
 
     public class OrderInfoDTO
@@ -185,8 +202,4 @@ namespace DDDC.BLL
         public string OrderStatus { get; set; }
         public string PaymentStatus { get; set; }
     }
-
-
-
-
 }

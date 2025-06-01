@@ -1,17 +1,14 @@
 ﻿using DDDC.DAL;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
-using System.Runtime.Remoting.Metadata.W3cXsd2001;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DDDC.BLL
 {
-    public class OrderTServices
+    public class OrderTServices : IDisposable
     {
-        DataClasses1DataContext db = new DataClasses1DataContext();
-
+        private DDDCModel1 db = new DDDCModel1();
 
         /// <summary>
         /// 插入订单信息到 OrderT 表
@@ -39,65 +36,106 @@ namespace DDDC.BLL
             DateTime startTime,
             DateTime endTime,
             decimal totalPrice,
-            
             string paymentStatus)
         {
-            // 创建一个新的订单对象
-            var newOrder = new orderT
+            using (var transaction = db.Database.BeginTransaction())
             {
-                order_id1 = orderId,
-                orderNumber = orderNumber,
-                passenger_id = passengerId,
-                ship_id = shipId,
-                order_status = orderStatus,
-                star_location = startLocation,
-                end_location = endLocation,
-                ship_locetion = shipLocation,
-                start_time = startTime,
-                end_time = endTime,
-                total_price = totalPrice,
-                estimate  = "0",
-                payment_status = paymentStatus
-            };
+                try
+                {
+                    // 创建一个新的订单对象
+                    var newOrder = new orderT
+                    {
+                        order_id1 = orderId,
+                        orderNumber = orderNumber,
+                        passenger_id = passengerId,
+                        ship_id = shipId,
+                        order_status = orderStatus,
+                        star_location = startLocation,
+                        end_location = endLocation,
+                        ship_locetion = shipLocation,
+                        start_time = startTime,
+                        end_time = endTime,
+                        total_price = totalPrice,
+                        estimate = "0",
+                        payment_status = paymentStatus
+                    };
 
-            // 将新订单插入到数据库中
-            db.orderT.InsertOnSubmit(newOrder);
+                    // 将新订单添加到数据库中
+                    db.orderT.Add(newOrder);
 
-            // 提交更改
-            try
-            {
-                db.SubmitChanges();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"插入订单失败：{ex.Message}");
-                throw; // 可以根据需求记录日志或抛出异常
+                    // 提交更改
+                    db.SaveChanges();
+                    transaction.Commit();
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    Console.WriteLine($"插入订单失败：{ex.Message}");
+                    throw; // 可以根据需求记录日志或抛出异常
+                }
             }
         }
+
         public orderT GetPositionByOrdrNumber(String OrderNum)
         {
-            return (from c in db.orderT
-                    where c.orderNumber == OrderNum
-                    select c).FirstOrDefault();
-
+            return db.orderT.FirstOrDefault(c => c.orderNumber == OrderNum);
         }
-        public void changeStatus(String OrderNum,decimal price)
+
+        public void changeStatus(String OrderNum, decimal price)
         {
-            var ss = db.orderT.SingleOrDefault(o => o.orderNumber == OrderNum);
-            ss.end_time = DateTime.Now;
-            ss.order_status = "已完成";
-            ss.payment_status = "已支付";
-            ss.total_price = price;
-            db.SubmitChanges();
+            using (var transaction = db.Database.BeginTransaction())
+            {
+                try
+                {
+                    var ss = db.orderT.FirstOrDefault(o => o.orderNumber == OrderNum);
+                    if (ss != null)
+                    {
+                        ss.end_time = DateTime.Now;
+                        ss.order_status = "已完成";
+                        ss.payment_status = "已支付";
+                        ss.total_price = price;
+                        db.SaveChanges();
+                        transaction.Commit();
+                    }
+                    else
+                    {
+                        transaction.Rollback();
+                        throw new Exception("订单未找到");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    throw new Exception($"更新订单状态失败: {ex.Message}", ex);
+                }
+            }
         }
 
         public void SubmitEst(String OrderNum, string evaluate)
         {
-            var ss = db.orderT.SingleOrDefault(o => o.orderNumber == OrderNum);
-            ss.estimate = evaluate;
-            db.SubmitChanges();
-
-
+            using (var transaction = db.Database.BeginTransaction())
+            {
+                try
+                {
+                    var ss = db.orderT.FirstOrDefault(o => o.orderNumber == OrderNum);
+                    if (ss != null)
+                    {
+                        ss.estimate = evaluate;
+                        db.SaveChanges();
+                        transaction.Commit();
+                    }
+                    else
+                    {
+                        transaction.Rollback();
+                        throw new Exception("订单未找到");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    throw new Exception($"提交评价失败: {ex.Message}", ex);
+                }
+            }
         }
 
         public decimal GetTodayIncome(int shipId)
@@ -144,7 +182,6 @@ namespace DDDC.BLL
             return income;
         }
 
-
         public decimal GetTotalIncome(int shipId)
         {
             var income = db.orderT
@@ -155,16 +192,10 @@ namespace DDDC.BLL
             return income;
         }
 
-
         public orderT GetorderTByOrdN(string ordn)
         {
-            return (from c in db.orderT
-                    where c.orderNumber == ordn
-                    select c).FirstOrDefault();
-
+            return db.orderT.FirstOrDefault(c => c.orderNumber == ordn);
         }
-
-
 
         public class OrderCommentData
         {
@@ -173,6 +204,7 @@ namespace DDDC.BLL
             public string Comment { get; set; }
             public DateTime OrderDate { get; set; }
         }
+
         public List<OrderCommentData> GetCommentsByShipId(int shipId)
         {
             var query = from orderT in db.orderT
@@ -196,39 +228,47 @@ namespace DDDC.BLL
             return query.ToList();
         }
 
-
         public class OrderPay
         {
             public string OrderNumber { get; set; }
             public decimal TotalPrice { get; set; }
-           
-            
         }
 
         public List<OrderPay> GetOrdersByShipId(int shipId)
         {
             var query = from orderT in db.orderT
-                        where orderT.ship_id == shipId && orderT.payment_status =="已支付"
+                        where orderT.ship_id == shipId && orderT.payment_status == "已支付"
                         select new OrderPay
                         {
                             OrderNumber = orderT.orderNumber,
-                            TotalPrice =Convert.ToDecimal( orderT.total_price)
-                            
+                            TotalPrice = Convert.ToDecimal(orderT.total_price)
                         };
 
             return query.ToList();
         }
 
+        #region IDisposable 实现
 
+        private bool disposed = false;
 
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposed)
+            {
+                if (disposing)
+                {
+                    db.Dispose();
+                }
+                disposed = true;
+            }
+        }
 
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
 
-
-
-
+        #endregion
     }
-
 }
-
-
-

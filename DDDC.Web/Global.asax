@@ -1,9 +1,13 @@
 ﻿<%@ Application Language="C#" %>
+<%@ Import Namespace="System.Data.Entity" %>
 
 <script runat="server">
 
     void Application_Start(object sender, EventArgs e)
     {
+        // 初始化 Entity Framework
+        Database.SetInitializer<DDDC.DAL.DDDCModel1>(null);
+
         ScriptResourceDefinition scriptResDef = new ScriptResourceDefinition();
         //设置jQuery库路径，其中版本号由安装的jQuery库版本号确定
         scriptResDef.Path = "~/Scripts/jquery-3.2.1.min.js";
