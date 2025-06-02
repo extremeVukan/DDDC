@@ -12,50 +12,60 @@ namespace DDDC.BLL
 
         public void AddShip(int ownerID, string shipName, string shipType, int capacity, string shipStatus, DateTime shipRegTime, string picture, string isallow, string adminname)
         {
-            try
+            using (var transaction = db.Database.BeginTransaction())
             {
-                ShipHandle ship = new ShipHandle
+                try
                 {
-                    owner_id = ownerID,
-                    ship_name = shipName,
-                    ship_type = shipType,
-                    capacity = capacity,
-                    ship_status = shipStatus,
-                    ship_reg_time = shipRegTime,
-                    Picture = picture,
-                    IsAllowed = isallow,
-                    Admin_name = adminname,
-                };
-                db.ShipHandle.Add(ship);
-                db.SaveChanges();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"添加船只信息失败: {ex.Message}", ex);
+                    ShipHandle ship = new ShipHandle
+                    {
+                        owner_id = ownerID,
+                        ship_name = shipName,
+                        ship_type = shipType,
+                        capacity = capacity,
+                        ship_status = shipStatus,
+                        ship_reg_time = shipRegTime,
+                        Picture = picture,
+                        IsAllowed = isallow,
+                        Admin_name = adminname,
+                    };
+                    db.ShipHandle.Add(ship);
+                    db.SaveChanges();
+                    transaction.Commit();
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    throw new Exception($"添加船只失败: {ex.Message}", ex);
+                }
             }
         }
 
         public void AddShips(int shipid, int ownerID, string shipName, string shipType, int capacity, string shipStatus, DateTime shipRegTime, string picture)
         {
-            try
+            using (var transaction = db.Database.BeginTransaction())
             {
-                ships ship = new ships
+                try
                 {
-                    ship_id = shipid,
-                    owner_id = ownerID,
-                    ship_name = shipName,
-                    ship_type = shipType,
-                    capacity = capacity,
-                    ship_status = shipStatus,
-                    ship_reg_time = shipRegTime,
-                    Picture = picture,
-                };
-                db.ships.Add(ship);
-                db.SaveChanges();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"添加船只信息失败: {ex.Message}", ex);
+                    ships ship = new ships
+                    {
+                        ship_id = shipid,
+                        owner_id = ownerID,
+                        ship_name = shipName,
+                        ship_type = shipType,
+                        capacity = capacity,
+                        ship_status = shipStatus,
+                        ship_reg_time = shipRegTime,
+                        Picture = picture,
+                    };
+                    db.ships.Add(ship);
+                    db.SaveChanges();
+                    transaction.Commit();
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    throw new Exception($"添加船只失败: {ex.Message}", ex);
+                }
             }
         }
 
@@ -81,7 +91,7 @@ namespace DDDC.BLL
                 catch (Exception ex)
                 {
                     transaction.Rollback();
-                    throw new Exception($"删除船只信息失败: {ex.Message}", ex);
+                    throw new Exception($"删除船只失败: {ex.Message}", ex);
                 }
             }
         }
@@ -345,7 +355,7 @@ namespace DDDC.BLL
                     else
                     {
                         transaction.Rollback();
-                        throw new ArgumentException("未找到指定ID的船只，无法更新状态。");
+                        throw new ArgumentException("未找到该用户名下的船只，无法更新状态。");
                     }
                 }
                 catch (Exception ex)
@@ -382,7 +392,8 @@ namespace DDDC.BLL
                 .ToList();
         }
 
-        // 实现 IDisposable 接口以正确释放资源
+        #region IDisposable 实现
+
         private bool disposed = false;
 
         protected virtual void Dispose(bool disposing)
@@ -402,5 +413,7 @@ namespace DDDC.BLL
             Dispose(true);
             GC.SuppressFinalize(this);
         }
+
+        #endregion
     }
 }

@@ -143,7 +143,7 @@ namespace DDDC.BLL
         public List<ShipSummaryDTO1> GetOrder(int userid)
         {
             return db.OrderForm
-                .Where(ord => ord.ClientID == userid && ord.Status != "已完成" && ord.Status != "已拒绝")
+                .Where(ord => ord.ClientID == userid && ord.Status != "已完成" && ord.Status != "已拒绝"&&ord.Status!="已退款")
                 .Select(ord1 => new ShipSummaryDTO1
                 {
                     Ordernumber = ord1.OrderNumber,
@@ -173,7 +173,6 @@ namespace DDDC.BLL
                     // 保存更改到数据库
                     db.SaveChanges();
                     transaction.Commit();
-
                     return true;
                 }
                 catch (Exception ex)
@@ -292,59 +291,6 @@ namespace DDDC.BLL
                 }
             }
         }
-
-        #region 新增的实用方法
-
-        /// <summary>
-        /// 获取指定用户的已完成订单
-        /// </summary>
-        /// <param name="userId">用户ID</param>
-        /// <returns>已完成订单列表</returns>
-        public List<OrderForm> GetCompletedOrdersByUserId(int userId)
-        {
-            return db.OrderForm
-                .Where(o => o.ClientID == userId && o.Status == "已完成")
-                .OrderByDescending(o => o.End_Time)
-                .ToList();
-        }
-
-        /// <summary>
-        /// 获取指定船主的所有订单
-        /// </summary>
-        /// <param name="ownerId">船主ID</param>
-        /// <returns>订单列表</returns>
-        public List<OrderForm> GetOrdersByOwnerId(int ownerId)
-        {
-            return db.OrderForm
-                .Where(o => o.OwnerID == ownerId)
-                .OrderByDescending(o => o.Start_Time)
-                .ToList();
-        }
-
-        /// <summary>
-        /// 获取特定时间范围内的订单
-        /// </summary>
-        /// <param name="startDate">开始日期</param>
-        /// <param name="endDate">结束日期</param>
-        /// <returns>订单列表</returns>
-        public List<OrderForm> GetOrdersByDateRange(DateTime startDate, DateTime endDate)
-        {
-            return db.OrderForm
-                .Where(o => o.Start_Time >= startDate && o.Start_Time <= endDate)
-                .OrderByDescending(o => o.Start_Time)
-                .ToList();
-        }
-
-        /// <summary>
-        /// 更新订单评分
-        /// </summary>
-        /// <param name="orderNumber">订单编号</param>
-        /// <param name="rating">评分</param>
-        /// <returns>是否更新成功</returns>
-        
-        
-
-        #endregion
 
         #region IDisposable 实现
 

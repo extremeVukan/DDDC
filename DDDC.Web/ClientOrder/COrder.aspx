@@ -18,33 +18,39 @@
         <h1 class="page-title">订单详细</h1>
         <p class="page-description">查看订单详情</p>
 
-       
         <div class="order-table">
-            <asp:GridView runat="server" DataSourceID="LinqDataSource1" ID="ctl02" AutoGenerateColumns="False" CssClass="styled-grid" GridLines="None" AllowPaging="True" AllowSorting="True" PageSize="5" OnPageIndexChanging="ctl02_PageIndexChanging">
-                        <Columns>
-<asp:BoundField DataField="OrderID" HeaderText="编号" ReadOnly="True" SortExpression="OrderID"></asp:BoundField>
-    <asp:BoundField DataField="OrderNumber" HeaderText="订单号" SortExpression="OrderNumber"></asp:BoundField>        <asp:BoundField DataField="ShipName" HeaderText="船名" SortExpression="ShipName"></asp:BoundField>            <asp:BoundField DataField="OwnerName" HeaderText="船主" SortExpression="OwnerName"></asp:BoundField>    <asp:BoundField DataField="PrePosition" HeaderText="预定位置" SortExpression="PrePosition"></asp:BoundField>    <asp:BoundField DataField="Destination" HeaderText="目的地" SortExpression="Destination"></asp:BoundField>    <asp:BoundField DataField="Notes" HeaderText="备注" SortExpression="Notes"></asp:BoundField>    <asp:BoundField DataField="Start_Time" HeaderText="开始时间" SortExpression="Start_Time"></asp:BoundField>        <asp:BoundField DataField="Status" HeaderText="状态" SortExpression="Status"></asp:BoundField>    <asp:ImageField DataImageUrlField="img" NullImageUrl="~/UserImg/暂无图片.gif" HeaderText="图片" SortExpression="img"></asp:ImageField>    <asp:TemplateField>        <ItemTemplate>            <asp:Button ID="btnCheckOrder" runat="server" Text="查看订单"                 CommandName="CheckOrder"                 CommandArgument='<%# Eval("OrderID") %>'                onclick="btnCheckOrder_Click" CssClass="accept-btn" />                        </ItemTemplate>    </asp:TemplateField></Columns>
-                
-                
-    
-
+            <asp:GridView runat="server" ID="ctl02" AutoGenerateColumns="False" CssClass="styled-grid" 
+                GridLines="None" AllowPaging="True" AllowSorting="True" PageSize="5" 
+                OnPageIndexChanging="ctl02_PageIndexChanging" OnSorting="ctl02_Sorting">
+                <Columns>
+                    <asp:BoundField DataField="OrderID" HeaderText="编号" ReadOnly="True" SortExpression="OrderID"></asp:BoundField>
+                    <asp:BoundField DataField="OrderNumber" HeaderText="订单号" SortExpression="OrderNumber"></asp:BoundField>
+                    <asp:BoundField DataField="ShipName" HeaderText="船名" SortExpression="ShipName"></asp:BoundField>
+                    <asp:BoundField DataField="OwnerName" HeaderText="船主" SortExpression="OwnerName"></asp:BoundField>
+                    <asp:BoundField DataField="PrePosition" HeaderText="预定位置" SortExpression="PrePosition"></asp:BoundField>
+                    <asp:BoundField DataField="Destination" HeaderText="目的地" SortExpression="Destination"></asp:BoundField>
+                    <asp:BoundField DataField="Notes" HeaderText="备注" SortExpression="Notes"></asp:BoundField>
+                    <asp:BoundField DataField="Start_Time" HeaderText="开始时间" SortExpression="Start_Time"></asp:BoundField>
+                    <asp:BoundField DataField="Status" HeaderText="状态" SortExpression="Status"></asp:BoundField>
+                    <asp:ImageField DataImageUrlField="img" NullImageUrl="~/UserImg/暂无图片.gif" HeaderText="图片" SortExpression="img"></asp:ImageField>
+                    <asp:TemplateField>
+                        <ItemTemplate>
+                            <asp:Button ID="btnCheckOrder" runat="server" Text="查看订单" 
+                                CommandName="CheckOrder" 
+                                CommandArgument='<%# Eval("OrderID") %>'
+                                onclick="btnCheckOrder_Click" CssClass="accept-btn" />
+                        </ItemTemplate>
+                    </asp:TemplateField>
+                </Columns>
+                <EmptyDataTemplate>
+                    <div class="empty-data">
+                        <p>暂无符合条件的订单</p>
+                    </div>
+                </EmptyDataTemplate>
             </asp:GridView>
         </div>
     </div>
 
-    <asp:LinqDataSource runat="server" EntityTypeName="" ID="LinqDataSource1"
-        ContextTypeName="DDDC.DAL.DataClasses1DataContext"
-        TableName="OrderForm" Where="ClientID == @ClientID && Status != @Status && Status != @Status1 && Status != @Status2 && Status != @Status3" Select="new (OrderNumber, ClientID, ShipName, OwnerName, PrePosition, Destination, Notes, Start_Time, End_Time, img, Status, ShipID, OrderID)" OrderBy="OrderID descending">
-        <WhereParameters>
-            <asp:SessionParameter SessionField="UserID" Name="ClientID" Type="Int32"></asp:SessionParameter>
-            <asp:Parameter DefaultValue="已拒绝" Name="Status" Type="String"></asp:Parameter>
-            <asp:Parameter DefaultValue="已完成" Name="Status1" Type="String"></asp:Parameter>
-            <asp:Parameter DefaultValue="退款中" Name="Status2" Type="String"></asp:Parameter>
-            <asp:Parameter DefaultValue="已退款" Name="Status3" Type="String"></asp:Parameter>
-        </WhereParameters>
-    </asp:LinqDataSource>
-
-    
    <style>
     /* 页面内容容器 */
     .content-wrapper {
@@ -145,5 +151,70 @@
             padding: 8px 16px;
         }
     }
+
+    /* 提示消息样式 */
+    .toast {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 12px 20px;
+        background-color: rgba(0, 0, 0, 0.7);
+        color: white;
+        border-radius: 4px;
+        z-index: 1000;
+        visibility: hidden;
+        opacity: 0;
+        transition: visibility 0s, opacity 0.3s linear;
+    }
+    
+    .toast.show {
+        visibility: visible;
+        opacity: 1;
+    }
+    
+    .toast.success {
+        background-color: rgba(46, 204, 113, 0.9);
+    }
+    
+    .toast.error {
+        background-color: rgba(231, 76, 60, 0.9);
+    }
+    
+    /* 空数据提示 */
+    .empty-data {
+        padding: 20px;
+        text-align: center;
+        background-color: #f9f9f9;
+        border: 1px dashed #ddd;
+        border-radius: 5px;
+        margin: 10px 0;
+    }
+    
+    .empty-data p {
+        color: #7f8c8d;
+        font-size: 16px;
+        margin: 0;
+    }
 </style>
+
+<script type="text/javascript">
+    // 显示提示消息
+    function showToast(message, type) {
+        var toast = document.createElement('div');
+        toast.className = 'toast ' + (type || '');
+        toast.innerHTML = message;
+        document.body.appendChild(toast);
+
+        setTimeout(function () {
+            toast.classList.add('show');
+            setTimeout(function () {
+                toast.classList.remove('show');
+                setTimeout(function () {
+                    document.body.removeChild(toast);
+                }, 300);
+            }, 3000);
+        }, 100);
+    }
+</script>
 </asp:Content>
+

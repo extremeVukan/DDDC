@@ -11,19 +11,26 @@ public partial class SelifInfo_Web_News : System.Web.UI.Page
 {
     Userservice userservice = new Userservice();
     MessageServices messageServices = new MessageServices();
+
     protected void Page_Load(object sender, EventArgs e)
     {
         if (!IsPostBack)
         {
+            if (Session["UserID"] == null)
+            {
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "alert",
+                    "alert('请登录！'); setTimeout(function(){ window.location.href = 'http://localhost:51058/login.aspx'; }, 100);", true);
+                return;
+            }
+
             int userID = Convert.ToInt32(Session["UserID"]);
 
             // 获取用户信息
             var user = userservice.GetUserByID(userID);
-            BindNews("未读"); // 默认显示所有消息
+
             if (user != null)
             {
                 // 加载个人信息
-                
                 lblemail.Text = user.email;
                 lblName.Text = user.user_name;
 
@@ -36,26 +43,37 @@ public partial class SelifInfo_Web_News : System.Web.UI.Page
                 {
                     Image2.ImageUrl = "~/UserImg/暂无图片.gif";
                 }
+
+                // 默认显示未读消息
+                BindNews("未读");
             }
             else
             {
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "alert",
-            "alert('请登录！'); setTimeout(function(){ window.location.href = 'http://localhost:51058/login.aspx'; }, 100);", true);
+                    "alert('请登录！'); setTimeout(function(){ window.location.href = 'http://localhost:51058/login.aspx'; }, 100);", true);
             }
-
-
         }
-        
-        
     }
 
     private void BindNews(string messageType)
     {
-        int userId = Convert.ToInt32(Session["UserID"]);
-        var newsList = messageServices.GetMessagesByClientIdAndType(userId, messageType);
+        try
+        {
+            int userId = Convert.ToInt32(Session["UserID"]);
 
-        RepeaterNews.DataSource = newsList;
-        RepeaterNews.DataBind();
+            // 获取消息并转换为List，避免直接绑定IQueryable
+            var newsList = messageServices.GetMessagesByClientIdAndType(userId, messageType).ToList();
+
+            RepeaterNews.DataSource = newsList;
+            RepeaterNews.DataBind();
+        }
+        catch (Exception ex)
+        {
+            // 记录错误并显示友好的错误提示
+            System.Diagnostics.Debug.WriteLine($"绑定消息数据时出错: {ex.Message}");
+            ScriptManager.RegisterStartupScript(this, GetType(), "toastScript",
+                $"alert('加载消息时出错: {ex.Message}');", true);
+        }
     }
 
     protected void FilterMessages(object sender, EventArgs e)
@@ -67,10 +85,24 @@ public partial class SelifInfo_Web_News : System.Web.UI.Page
 
     protected void MarkAsRead_Click(object sender, EventArgs e)
     {
-        Button btn = (Button)sender;
-        int newsId = Convert.ToInt32(btn.CommandArgument);
-        messageServices.MarkMessageAsRead(newsId); // 标记为已读
-        BindNews("全部"); // 重新加载消息
-        Response.Redirect("http://localhost:51058/SelifInfo_Web/News.aspx");
+        try
+        {
+            Button btn = (Button)sender;
+            int newsId = Convert.ToInt32(btn.CommandArgument);
+            messageServices.MarkMessageAsRead(newsId); // 标记为已读
+
+            // 重新加载当前筛选类型的消息
+            string currentFilter = ViewState["CurrentFilter"] as string ?? "全部";
+            BindNews(currentFilter);
+
+            // 刷新当前页面更新未读消息计数
+            Response.Redirect(Request.RawUrl);
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"标记消息已读时出错: {ex.Message}");
+            ScriptManager.RegisterStartupScript(this, GetType(), "errorAlert",
+                $"alert('处理消息时出错: {ex.Message}');", true);
+        }
     }
 }

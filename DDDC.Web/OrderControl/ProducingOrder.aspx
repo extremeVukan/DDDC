@@ -12,14 +12,14 @@
         <asp:Label ID="lblemail" runat="server" Text="Label"></asp:Label>
     </p>
     <h2 class="username" style="margin-top:10px; background:#1abc9c; border-radius:20px">
-    <p>船只：</p>
-<asp:Label ID="lblShipName" runat="server" Text="Label"></asp:Label>
-</h2>
+        <p>船只：</p>
+        <asp:Label ID="lblShipName" runat="server" Text="Label"></asp:Label>
+    </h2>
 
-<h2 class="username" style="margin-top:10px; background:#1abc9c; border-radius:20px">
-    <p>状态：</p>
-<asp:Label ID="lblShipStatus" runat="server" Text="Label"></asp:Label>
-</h2>
+    <h2 class="username" style="margin-top:10px; background:#1abc9c; border-radius:20px">
+        <p>状态：</p>
+        <asp:Label ID="lblShipStatus" runat="server" Text="Label"></asp:Label>
+    </h2>
 </asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder2" Runat="Server">
@@ -30,7 +30,6 @@
         <div class="order-table">
             <asp:GridView 
                 runat="server" 
-                DataSourceID="LinqDataSource1" 
                 ID="ctl02" 
                 AutoGenerateColumns="False" 
                 CssClass="styled-grid" 
@@ -39,7 +38,7 @@
                 AllowSorting="True"
                 PageSize="5"
                 OnPageIndexChanging="ctl02_PageIndexChanging"
-                >
+                OnSorting="ctl02_Sorting">
                 
                 <Columns>
                     <asp:BoundField DataField="OrderID" HeaderText="编号" ReadOnly="True" SortExpression="OrderID" />
@@ -62,28 +61,14 @@
                         </ItemTemplate>
                     </asp:TemplateField>
                 </Columns>
+                <EmptyDataTemplate>
+                    <div class="empty-data">
+                        <p>暂无正在进行的订单</p>
+                    </div>
+                </EmptyDataTemplate>
             </asp:GridView>
         </div>
     </div>
-
-    <!-- LinqDataSource with OrderBy -->
-    <asp:LinqDataSource 
-    runat="server" 
-    ID="LinqDataSource1"
-    ContextTypeName="DDDC.DAL.DataClasses1DataContext"
-    TableName="OrderForm"
-    Select="new (OrderNumber, ClientID, ShipName, OwnerName, PrePosition, Destination, Notes, Start_Time, End_Time, img, Status, ShipID, OrderID)"
-    Where="OwnerID == @OwnerID && (Status == @Status || Status == @Status1 || Status == @Status2)"
-    OrderBy="OrderID descending">
-    <WhereParameters>
-        <asp:SessionParameter SessionField="UserID" Name="OwnerID" Type="Int32" />
-        <asp:Parameter DefaultValue="已到达" Name="Status" Type="String"></asp:Parameter>
-        <asp:Parameter DefaultValue="确认" Name="Status1" Type="String"></asp:Parameter>
-        <asp:Parameter DefaultValue="已搭乘" Name="Status2" Type="String"></asp:Parameter>
-    </WhereParameters>
-</asp:LinqDataSource>
-
-
     
     <style>
         /* 页面内容容器 */
@@ -161,6 +146,22 @@
             background-color: #45a049;
         }
 
+        /* 空数据提示 */
+        .empty-data {
+            padding: 20px;
+            text-align: center;
+            background-color: #f9f9f9;
+            border: 1px dashed #ddd;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        
+        .empty-data p {
+            color: #7f8c8d;
+            font-size: 16px;
+            margin: 0;
+        }
+
         /* 响应式设计 */
         @media screen and (max-width: 768px) {
             .content-wrapper {
@@ -185,5 +186,53 @@
                 padding: 8px 16px;
             }
         }
+        
+        /* 提示消息样式 */
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 12px 20px;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            border-radius: 4px;
+            z-index: 1000;
+            visibility: hidden;
+            opacity: 0;
+            transition: visibility 0s, opacity 0.3s linear;
+        }
+        
+        .toast.show {
+            visibility: visible;
+            opacity: 1;
+        }
+        
+        .toast.success {
+            background-color: rgba(46, 204, 113, 0.9);
+        }
+        
+        .toast.error {
+            background-color: rgba(231, 76, 60, 0.9);
+        }
     </style>
+    
+    <script type="text/javascript">
+        // 显示提示消息
+        function showToast(message, type) {
+            var toast = document.createElement('div');
+            toast.className = 'toast ' + (type || '');
+            toast.innerHTML = message;
+            document.body.appendChild(toast);
+
+            setTimeout(function () {
+                toast.classList.add('show');
+                setTimeout(function () {
+                    toast.classList.remove('show');
+                    setTimeout(function () {
+                        document.body.removeChild(toast);
+                    }, 300);
+                }, 3000);
+            }, 100);
+        }
+    </script>
 </asp:Content>

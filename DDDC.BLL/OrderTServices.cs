@@ -140,12 +140,16 @@ namespace DDDC.BLL
 
         public decimal GetTodayIncome(int shipId)
         {
-            DateTime today = DateTime.Today;
+            // 计算时间范围，在查询外
+            DateTime startDate = DateTime.Today;
+            DateTime endDate = startDate.AddDays(1);
 
+            // 使用本地变量在查询中
             var income = db.orderT
                 .Where(o => o.ship_id == shipId
                             && o.end_time.HasValue
-                            && o.end_time.Value.Date == today.Date
+                            && o.end_time.Value >= startDate
+                            && o.end_time.Value < endDate
                             && o.payment_status == "已支付")
                 .Sum(o => (decimal?)o.total_price) ?? 0;
 
@@ -154,12 +158,15 @@ namespace DDDC.BLL
 
         public decimal GetYesterdayIncome(int shipId)
         {
-            DateTime yesterday = DateTime.Today.AddDays(-1);
+            // 计算时间范围，在查询外
+            DateTime startDate = DateTime.Today.AddDays(-1);
+            DateTime endDate = DateTime.Today;
 
             var income = db.orderT
                 .Where(o => o.ship_id == shipId
                             && o.end_time.HasValue
-                            && o.end_time.Value.Date == yesterday.Date
+                            && o.end_time.Value >= startDate
+                            && o.end_time.Value < endDate
                             && o.payment_status == "已支付")
                 .Sum(o => (decimal?)o.total_price) ?? 0;
 
@@ -168,14 +175,16 @@ namespace DDDC.BLL
 
         public decimal GetMonthlyIncome(int shipId)
         {
-            DateTime firstDayOfMonth = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
-            DateTime firstDayOfNextMonth = firstDayOfMonth.AddMonths(1);
+            // 计算时间范围，在查询外
+            DateTime today = DateTime.Today;
+            DateTime startDate = new DateTime(today.Year, today.Month, 1);
+            DateTime endDate = startDate.AddMonths(1);
 
             var income = db.orderT
                 .Where(o => o.ship_id == shipId
                             && o.end_time.HasValue
-                            && o.end_time.Value >= firstDayOfMonth
-                            && o.end_time.Value < firstDayOfNextMonth
+                            && o.end_time.Value >= startDate
+                            && o.end_time.Value < endDate
                             && o.payment_status == "已支付")
                 .Sum(o => (decimal?)o.total_price) ?? 0;
 
@@ -184,6 +193,7 @@ namespace DDDC.BLL
 
         public decimal GetTotalIncome(int shipId)
         {
+            // 这个方法不需要日期比较，保持不变
             var income = db.orderT
                 .Where(o => o.ship_id == shipId
                             && o.payment_status == "已支付")
@@ -191,6 +201,7 @@ namespace DDDC.BLL
 
             return income;
         }
+
 
         public orderT GetorderTByOrdN(string ordn)
         {
@@ -236,16 +247,22 @@ namespace DDDC.BLL
 
         public List<OrderPay> GetOrdersByShipId(int shipId)
         {
-            var query = from orderT in db.orderT
-                        where orderT.ship_id == shipId && orderT.payment_status == "已支付"
-                        select new OrderPay
-                        {
-                            OrderNumber = orderT.orderNumber,
-                            TotalPrice = Convert.ToDecimal(orderT.total_price)
-                        };
+            // 先执行查询，获取基本数据
+            var results = db.orderT
+                            .Where(o => o.ship_id == shipId && o.payment_status == "已支付")
+                            .Select(o => new { o.orderNumber, o.total_price })
+                            .ToList();
 
-            return query.ToList();
+            // 在内存中进行转换
+            return results.Select(r => new OrderPay
+            {
+                OrderNumber = r.orderNumber,
+                TotalPrice = r.total_price ?? 0m // 处理 null 值
+            }).ToList();
         }
+
+
+
 
         #region IDisposable 实现
 

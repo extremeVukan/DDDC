@@ -235,7 +235,7 @@ namespace DDDC.BLL
         // 获取用户信息
         public users GetUserByID(int userID)
         {
-            return db.users.FirstOrDefault(c => c.user_id == userID);
+              return db.users.FirstOrDefault(c => c.user_id == userID);  
         }
 
         public void ChangeUserStatus(int userID)

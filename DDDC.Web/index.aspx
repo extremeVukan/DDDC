@@ -244,17 +244,17 @@
         <div class="info-group">
             <div class="info-item">
                 <label for="txtprovince"><i class="fas fa-map"></i> 省份：</label>
-                <asp:TextBox ID="txtprovince" runat="server" CssClass="info-input" ReadOnly="true"></asp:TextBox>
+                <asp:TextBox ID="txtprovince" runat="server" CssClass="info-input" ReadOnly="false"></asp:TextBox>
             </div>
             
             <div class="info-item">
                 <label for="txtcity"><i class="fas fa-city"></i> 市区：</label>
-                <asp:TextBox ID="txtcity" runat="server" CssClass="info-input" ReadOnly="true"></asp:TextBox>
+                <asp:TextBox ID="txtcity" runat="server" CssClass="info-input" ReadOnly="false"></asp:TextBox>
             </div>
             
             <div class="info-item">
                 <label for="txtposition"><i class="fas fa-map-pin"></i> 详细位置：</label>
-                <asp:TextBox ID="txtposition" runat="server" CssClass="info-input" ReadOnly="true"></asp:TextBox>
+                <asp:TextBox ID="txtposition" runat="server" CssClass="info-input" ReadOnly="false"></asp:TextBox>
             </div>
             
             <div class="action-buttons">

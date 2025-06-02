@@ -174,11 +174,19 @@
     </style>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        try {
             // 使用 Chart.js 创建柱状图
             const ctx = document.getElementById('incomeBarChart').getContext('2d');
-            const chartData = JSON.parse('<%= ChartData %>'); // 后端注入的 JSON 数据
+            let chartData;
+
+            try {
+                chartData = JSON.parse('<%= ChartData %>');
+            } catch (e) {
+                console.error("Error parsing chart data:", e);
+                chartData = { labels: ["今日", "昨日", "本月", "总计"], data: [0, 0, 0, 0] };
+            }
 
             new Chart(ctx, {
                 type: 'bar',
@@ -193,13 +201,32 @@
                     }]
                 },
                 options: {
+                    responsive: true,
                     scales: {
                         y: {
-                            beginAtZero: true
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function (value) {
+                                    return '¥' + value;
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function (context) {
+                                    return '收入: ¥' + context.raw;
+                                }
+                            }
                         }
                     }
                 }
             });
-        });
-    </script>
+        } catch (e) {
+            console.error("Error initializing chart:", e);
+        }
+    });
+</script>
+
 </asp:Content>
