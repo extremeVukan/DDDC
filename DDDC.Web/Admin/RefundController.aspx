@@ -1,7 +1,5 @@
 ﻿<%@ Page Title="退款管理" Language="C#" MasterPageFile="~/Admin/AdminMasterPage.master" AutoEventWireup="true" CodeFile="RefundController.aspx.cs" Inherits="Admin_RefundController" %>
 
-
-
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
     <div class="refund-management-container">
         <h2 class="page-title">退款管理</h2>
@@ -14,11 +12,11 @@
 
         <!-- 退款列表 -->
         <div class="refund-list-container">
-            <asp:Repeater ID="RepeaterRefunds" runat="server">
+            <asp:Repeater ID="RepeaterRefunds" runat="server" OnItemDataBound="RepeaterRefunds_ItemDataBound">
                 <HeaderTemplate>
                     <div class="refund-header">
                         <div>订单号</div>
-                        <div>用户昵称</div>
+                        <div>用户ID</div>
                         <div>退款理由</div>
                         <div>申请时间</div>
                         <div>状态</div>
@@ -31,25 +29,30 @@
                         <div><%# Eval("UserID") %></div>
                         <div><%# Eval("Reason") %></div>
                         <div><%# Eval("ApplicationDate", "{0:yyyy-MM-dd HH:mm}") %></div>
-                        <div class="status-label <%# Eval("Status").ToString() == "Pending" ? "status-pending" : "status-completed" %>">
+                        <div class="status-label <%# Eval("Status").ToString() == "待处理" ? "status-pending" : "status-completed" %>">
                             <%# Eval("Status") %>
                         </div>
                         <div class="action-buttons">
                             <asp:Button ID="btnApprove" runat="server" Text="同意" CssClass="approve-btn"
-                                CommandName="Approve" CommandArgument='<%# Eval("RefundID") %>' OnClick="btnApprove_Click" />
+                                CommandName="Approve" CommandArgument='<%# Eval("RefundID") %>' OnClick="btnApprove_Click" 
+                                Visible='<%# Eval("Status").ToString() == "待处理" %>' />
                             <asp:Button ID="btnReject" runat="server" Text="拒绝" CssClass="reject-btn"
-                                CommandName="Reject" CommandArgument='<%# Eval("RefundID") %>' OnClick="btnReject_Click" />
+                                CommandName="Reject" CommandArgument='<%# Eval("RefundID") %>' OnClick="btnReject_Click" 
+                                Visible='<%# Eval("Status").ToString() == "待处理" %>' />
                             <asp:Button ID="btnContact" runat="server" Text="联系用户" CssClass="contact-btn"
                                 CommandName="Contact" CommandArgument='<%# Eval("UserID") %>' OnClick="btnContact_Click" />
                         </div>
                     </div>
                 </ItemTemplate>
                 <FooterTemplate>
-                    <div class="no-refunds" runat="server" visible='<%# RepeaterRefunds.Items.Count == 0 %>'>
-                        暂无退款申请记录。
                     </div>
                 </FooterTemplate>
             </asp:Repeater>
+            
+            <!-- 无数据提示 -->
+            <asp:Panel ID="NoDataPanel" runat="server" CssClass="no-refunds" Visible="false">
+                暂无退款申请记录。
+            </asp:Panel>
         </div>
     </div>
 
@@ -180,7 +183,12 @@
         .contact-btn:hover {
             background-color: #2980b9;
         }
+        
+        .no-refunds {
+            padding: 20px;
+            text-align: center;
+            color: #7f8c8d;
+            font-size: 16px;
+        }
     </style>
 </asp:Content>
-
-

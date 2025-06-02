@@ -78,16 +78,21 @@ namespace DDDC.BLL
 
         public List<RefundDTO> GetRefundList()
         {
-            return db.AfterSales.Select(r => new RefundDTO
+            // 分两步执行：先将数据加载到内存，再进行类型转换
+            var afterSalesData = db.AfterSales.ToList(); // 先获取所有数据到内存
+
+            // 然后在内存中进行转换和映射
+            return afterSalesData.Select(r => new RefundDTO
             {
                 RefundID = r.ServicesID,
                 OrderNumber = r.ordernumber,
-                UserID = Convert.ToInt32(r.UserID),
+                UserID = r.UserID ?? 0, // 使用空合并运算符处理可能为null的UserID
                 Reason = r.Reason,
-                ApplicationDate = Convert.ToDateTime(r.ApplicationDate),
+                ApplicationDate = r.ApplicationDate ?? DateTime.MinValue, // 处理null日期
                 Status = r.Status
             }).ToList();
         }
+
 
         public bool ApproveRefund(int refundId)
         {
